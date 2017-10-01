@@ -11,7 +11,9 @@ Customer::Customer(float timeIn, int id){
 	this->timeOut=-1;
 	this->id=id;
 }
-
+Customer::~Customer(){
+	delete this;
+}
 const float Customer::getInTime(){
 	return this->timeIn;
 }

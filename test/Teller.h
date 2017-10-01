@@ -15,10 +15,11 @@ public:
 	void compService();
 	//constructors
 	Teller(int id);
+	~Teller();
 private:
 	CustQueue cQueue;
 	//total rest time
-	int tRest;
+	const int tRest;
 	bool present;
 	int id;
 };

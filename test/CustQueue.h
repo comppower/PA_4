@@ -13,11 +13,14 @@ using ListC=std::list<Customer>;
 #define CUSTQUEUE_H_
 class CustQueue{
 public:
-	Customer popTop();
-	Customer peekTop();
-	void addCust(Customer c);
+	const Customer popTop();
+	const Customer peekTop();
+	void addCust(Customer *_c);
+	//constructor
+	CustQueue();
+	~CustQueue();
 private:
-	ListC listC;
+	ListC *_listC;
 };
 
 #endif /* CUSTQUEUE_H_ */

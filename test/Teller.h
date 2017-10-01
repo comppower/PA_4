@@ -13,12 +13,14 @@ class Teller{
 public:
 	void reqService();
 	void compService();
-
+	//constructors
+	Teller(int id);
 private:
 	CustQueue cQueue;
 	//total rest time
 	int tRest;
 	bool present;
+	int id;
 };
 
 

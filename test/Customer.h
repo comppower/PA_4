@@ -9,15 +9,17 @@
 #define CUSTOMER_H_
 class Customer{
 public:
-	int getInTime();
-	int getOutTime();
-	void setOutTime(int tIn, int id);
-	Customer(int inTime);
+	const float getInTime();
+	const float getOutTime();
+	void setOutTime(float timeOut);
+	const int getId();
+	//constructor
+	Customer(float timeIn, int id);
 	~Customer();
-	int id;
 private:
-	int timeIn;
-	int timeOut;
+	int id;
+	float timeIn;
+	float timeOut;
 };
 
 #endif /* CUSTOMER_H_ */

@@ -16,7 +16,7 @@ EventQueue *Marshal::_eventQ =new EventQueue();
 bool Marshal::singleQ=true;
 float Marshal::clock =0;
 CustQueue *Marshal::_customerQ = new CustQueue();
-vectTell *Marshal::_listTell=new std::vector<Teller>(0);
+vectTell *Marshal::_listTell=new std::vector<Teller>(1);
 ListCust *Marshal::_servedCust= new ListCust();
 int Marshal::cNum=0;
 int Marshal::tellerNum=0;
@@ -38,9 +38,9 @@ Marshal::Marshal(){}
  * breaks for the teller
  */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
+	_listTell->resize(tellerNum);
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
-		_listTell=new std::vector<Teller>(tellerNum);
 		//set to 0 so all customers come in at beginning
 		Event *_e=new Event(0, EventType::enqCust, Marshal::cId++);
 		Marshal::EnqEvent(_e);

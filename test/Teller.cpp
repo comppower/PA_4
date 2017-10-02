@@ -24,7 +24,6 @@ void Teller::ReqService(){
 	if(_cQueue->Length()>0){
 		Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
 		Marshal::EnqEvent(_e);
-		available=false;
 	}
 	//otherwise ask the marshal for a customer
 	else{

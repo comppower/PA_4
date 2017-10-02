@@ -21,7 +21,7 @@ using ListTell=std::list<Teller>;
 //ever be 1 instance required
 class Marshal{
 public:
-	Marshal(int cNum, int tellerNum, int simTime, int avgServeTime);
+	static void init(int cNum, int tellerNum, int simTime, int avgServeTime);
 	~Marshal();
 	//gets the lines for the tellers set up
 	static void initTellers();
@@ -43,16 +43,17 @@ public:
 	static float avgServeTime();
 
 private:
-	static EventQueue eventQ;
+	static EventQueue *_eventQ;
 	static float clock;
 	//this is the single customer queue
-	static CustQueue customerQ;
+	static CustQueue *_customerQ;
 	//this is the list of tellers
 	static ListTell listTell;
 	//this is the list of serviced customers
-	static ListCust listCust;
+	static ListCust *_listCust;
 	static int cNum, tellerNum;
 	static float serveTime, simTime;
+	static int cId, tId;
 };
 
 

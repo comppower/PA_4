@@ -23,7 +23,7 @@ private:
 	int GetCompServeTime();
 	CustQueue *_cQueue;
 	//total rest time
-	const int tRest=600;
+	const int tRest=10;
 	bool available;
 	int id;
 };

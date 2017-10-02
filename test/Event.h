@@ -12,15 +12,15 @@ enum EventType {enqCust, reqCust, compRest, compServe};
 
 class Event{
 public:
-	Event(int time, EventType type, int id);
-	Event(int time, EventType type);
+	Event(float time, EventType type, int id);
+	Event(float time, EventType type);
 	~Event();
-	int getTime();
+	const int getTime();
 	int getId();
-	bool operator <(const Event *_e1);
+	//bool operator<(Event e1, Event e2);
 	EventType getType();
 private:
-	int time;
+	float time;
 	int id;
 	EventType type;
 };

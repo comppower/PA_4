@@ -18,6 +18,7 @@
 int main(){
 	srand(time(NULL));
 	Marshal::init(4, 3, 60, 3);
+	Marshal::RunSim();
 	return 0;
 }
 

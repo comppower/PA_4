@@ -34,6 +34,8 @@ public:
 	static void ReqCustomer(int id);
 	//runs the simulation
 	static void RunSim();
+	//prints the event Q
+	static void printEQ();
 	//gets the sum of the wait times from
 	//the tellers
 	static int CalcSum();

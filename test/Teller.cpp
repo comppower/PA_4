@@ -9,6 +9,7 @@
 #include "Marshal.h"
 #include <stdlib.h>
 #include <cstdlib>
+
 /**
  * This inits a teller and has it ask for a customer
  */
@@ -65,6 +66,10 @@ void Teller::CompService(){
 	Marshal::EnqEvent(_e);
 }
 
+void Teller::CompRest(){
+	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
+	Marshal::EnqEvent(_e);
+}
 /**
  * @returns the time the rest is over
  */

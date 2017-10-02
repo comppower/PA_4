@@ -13,6 +13,7 @@ class Teller{
 public:
 	void ReqService();
 	void CompService();
+	void CompRest();
 	void qCust(Customer *_c);
 	//gets the time the rest will be done
 	int GetRestTime();
@@ -26,7 +27,7 @@ private:
 	int GetCompServeTime();
 	CustQueue *_cQueue;
 	//total rest time
-	const int tRest=10;
+	static const int tRest=10;
 	bool available;
 	int id;
 };

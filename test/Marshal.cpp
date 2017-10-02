@@ -60,26 +60,30 @@ void Marshal::InitTellers(){
 	}
 }
 
-void Marshal::RunSim(){
-	while(!_eventQ->empty()){
+void Marshal::RunSim() {
+	while (!_eventQ->empty()) {
 		Event e = _eventQ->top();
 		EventType type = e.getType();
-		clock=e.getTime();
+		clock = e.getTime();
+		//advances the event queue
+		_eventQ->pop();
 		//Creates a switch statement for a type
-		switch(type){
+		bool found = false;
+		switch (type) {
 		case enqCust:
-			if(singleQ){
+			if (singleQ) {
 				_customerQ->addCust(new Customer(Marshal::now(), cId++));
 			}
 			break;
 
 		case reqCust:
-			for(int i=0; i<listTell.capacity(); i++){
+			for (uint i = 0; !found || i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
-				if(t.GetId()==e.getId()){
-					listTell.erase(listTell.begin()+i);
-					if(singleQ){
-						if(_customerQ->Length()>0){
+				if (t.GetId() == e.getId()) {
+					found = true;
+					listTell.erase(listTell.begin() + i);
+					if (singleQ) {
+						if (_customerQ->Length() > 0) {
 							t.qCust(_customerQ->popTop());
 							listTell.push_back(t);
 						}
@@ -87,25 +91,32 @@ void Marshal::RunSim(){
 				}
 			}
 			break;
+
 		case compRest:
-			break;
-		case compServe:
-			for(int i=0; i<listTell.capacity(); i++){
+			for (uint i = 0; !found||i < listTell.capacity(); i++) {
 				Teller t = listTell.at(i);
-				if(t.GetId()==e.getId()){
-					listTell.erase(listTell.begin()+i);
+				if (t.GetId() == e.getId()) {
+					found =true;
+					listTell.erase(listTell.begin() + i);
+					t.CompRest();
+				}
+			}
+			break;
+
+		case compServe:
+			for (uint i = 0;  !found||i < listTell.capacity(); i++) {
+				Teller t = listTell.at(i);
+				if (t.GetId() == e.getId()) {
+					found =true;
+					listTell.erase(listTell.begin() + i);
 					t.CompService();
 					listTell.push_back(t);
 				}
 			}
 			break;
-		}
-	}
-	//pops first event
-	//check to see type and id
-	//case switch on type
-	//execute on item
-	//push back if needed
+		}//switch
+		printEQ();
+	}//while
 }
 
 void Marshal::EnqEvent(Event *_e){
@@ -136,6 +147,16 @@ float Marshal::now(){
 
 float Marshal::avgServeTime(){
 	return serveTime;
+}
+
+void Marshal::printEQ(){
+	EventQueue temp= *_eventQ;
+	Event e=temp.top();
+	while(!temp.empty()){
+		std::cout<<"Time: "<<e.getTime()<<" "<<e.getType()<<" Id:"<<e.getId()<<std::endl;
+		temp.pop();
+		e=temp.top();
+	}
 }
 
 //prints the event queue

@@ -17,7 +17,7 @@ Teller::Teller(int id){
 	_cQueue=new CustQueue();
 	available = true;
 	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
-	Marshal::EnqEvent(_e);
+	//Marshal::EnqEvent(_e);
 }
 /**
  * default constructor for vector list
@@ -28,7 +28,7 @@ Teller::Teller(){
 	available=false;
 }
 Teller::~Teller(){
-	delete _cQueue;
+	//delete _cQueue;
 }
 
 void Teller::ReqService(){

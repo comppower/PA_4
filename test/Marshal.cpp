@@ -23,6 +23,8 @@ int Marshal::tellerNum=0;
 float Marshal::serveTime=0;
 float Marshal::simTime=0;
 int Marshal::cId=0;
+//this Id will be
+//the location in the list
 int Marshal::tId=0;
 
 //because this is a static class
@@ -39,15 +41,18 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		_listTell=new std::vector<Teller>(tellerNum);
-		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);
-		_eventQ->push(*_e);
+		//set to 0 so all customers come in at beginning
+		Event *_e=new Event(0, EventType::enqCust, Marshal::cId++);
+		Marshal::EnqEvent(_e);
 	}
+	Marshal::InitTellers();
 }
 
 void Marshal::InitTellers(){
 	if(singleQ){
 		for(uint i=0; i<_listTell->size(); i++){
 			Teller *_t = new Teller(tId++);
+			_listTell->push_back(*_t);
 		}
 	}
 }
@@ -59,7 +64,7 @@ void Marshal::EnqEvent(Event *_e){
 void Marshal::ReqCustomer(int id){
 	if(singleQ){
 		if(_customerQ->Length()>0){
-			Teller temp = _listTell->at(id-1);
+			Teller temp = _listTell->at(id);
 			temp.qCust(_customerQ->popTop());
 		}
 	}

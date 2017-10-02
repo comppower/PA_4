@@ -34,7 +34,12 @@ EventType Event::getType(){
 }
 
 bool operator <(Event const &e1, Event const &e2){
-	return e1.time>e2.time;
+	 if(e1.time>e2.time){
+		 return true;
+	 }
+	 else{
+		 return false;
+	 }
 }
 
 

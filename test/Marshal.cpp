@@ -6,15 +6,17 @@
  */
 
 #include "Marshal.h"
+#include "Teller.h"
 #include <cstdlib>
 #include <iostream>
 
 //sets up the marshaller varaibles
 //these are just placeholders before init can be called
 EventQueue *Marshal::_eventQ =new EventQueue();
+bool Marshal::singleQ=true;
 float Marshal::clock =0;
 CustQueue *Marshal::_customerQ = new CustQueue();
-ListTell *Marshal::_listTell=new ListTell();
+vectTell *Marshal::_listTell=new std::vector<Teller>(0);
 ListCust *Marshal::_servedCust= new ListCust();
 int Marshal::cNum=0;
 int Marshal::tellerNum=0;
@@ -36,21 +38,31 @@ Marshal::Marshal(){}
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
+		_listTell=new std::vector<Teller>(tellerNum);
 		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);
 		_eventQ->push(*_e);
 	}
 }
 
 void Marshal::InitTellers(){
-
+	if(singleQ){
+		for(uint i=0; i<_listTell->size(); i++){
+			Teller *_t = new Teller(tId++);
+		}
+	}
 }
 
 void Marshal::EnqEvent(Event *_e){
-
+	_eventQ->push(*_e);
 }
 
 void Marshal::ReqCustomer(int id){
-
+	if(singleQ){
+		if(_customerQ->Length()>0){
+			Teller temp = _listTell->at(id-1);
+			temp.qCust(_customerQ->popTop());
+		}
+	}
 }
 
 int Marshal::RunSum(){
@@ -58,15 +70,15 @@ int Marshal::RunSum(){
 }
 
 void Marshal::StoreCust(Customer *_c){
-
+	_servedCust->push_front(*_c);
 }
 
 float Marshal::now(){
-	return 0;
+	return clock;
 }
 
 float Marshal::avgServeTime(){
-	return 0;
+	return serveTime;
 }
 
 //prints the event queue

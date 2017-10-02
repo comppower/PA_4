@@ -15,7 +15,7 @@
 
 typedef std::priority_queue<Event> EventQueue;
 using ListCust=std::list<Customer>;
-using ListTell=std::list<Teller>;
+using vectTell=std::vector<Teller>;
 
 //Marshal is the C++ equivalent of a static class
 //all of the methods are static because there will only
@@ -46,11 +46,12 @@ public:
 private:
 	Marshal();
 	static EventQueue *_eventQ;
+	static bool singleQ;
 	static float clock;
 	//this is the single customer queue
 	static CustQueue *_customerQ;
 	//this is the list of tellers
-	static ListTell *_listTell;
+	static vectTell *_listTell;
 	//this is the list of serviced customers
 	static ListCust *_servedCust;
 	static int cNum, tellerNum;

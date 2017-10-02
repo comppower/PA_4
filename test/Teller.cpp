@@ -9,12 +9,24 @@
 #include "Marshal.h"
 #include <stdlib.h>
 #include <cstdlib>
+/**
+ * This inits a teller and has it ask for a customer
+ */
 Teller::Teller(int id){
 	this->id=id;
 	_cQueue=new CustQueue();
 	available = true;
+	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
+	Marshal::EnqEvent(_e);
 }
-
+/**
+ * default constructor for vector list
+ */
+Teller::Teller(){
+	this->id=-1;
+	_cQueue=new CustQueue();
+	available=false;
+}
 Teller::~Teller(){
 	delete _cQueue;
 }
@@ -27,6 +39,7 @@ void Teller::ReqService(){
 	}
 	//otherwise ask the marshal for a customer
 	else{
+		//this puts the customer into the queue
 		Marshal::ReqCustomer(id);
 		//if there's still no customer then go on "break"
 		if(_cQueue->Length()==0){
@@ -49,6 +62,7 @@ void Teller::CompService(){
 	Marshal::StoreCust(_c);
 	//ask the Marshal for a customer
 	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
+	Marshal::EnqEvent(_e);
 }
 
 /**
@@ -62,3 +76,10 @@ int Teller::GetCompServeTime(){
 	return Marshal::now()+((Marshal::avgServeTime()*rand())/float(RAND_MAX));
 }
 
+void Teller::qCust(Customer *_c){
+	_cQueue->addCust(_c);
+}
+
+int Teller::GetId(){
+	return id;
+}

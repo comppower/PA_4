@@ -15,8 +15,8 @@
 EventQueue *Marshal::_eventQ =new EventQueue();
 bool Marshal::singleQ=true;
 float Marshal::clock =0;
+vectTell Marshal::listTell;
 CustQueue *Marshal::_customerQ = new CustQueue();
-vectTell *Marshal::_listTell=new std::vector<Teller>(1);
 ListCust *Marshal::_servedCust= new ListCust();
 int Marshal::cNum=0;
 int Marshal::tellerNum=0;
@@ -38,7 +38,7 @@ Marshal::Marshal(){}
  * breaks for the teller
  */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
-	_listTell->resize(tellerNum);
+	listTell.reserve(tellerNum);
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		//set to 0 so all customers come in at beginning
@@ -50,10 +50,13 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 
 void Marshal::InitTellers(){
 	if(singleQ){
-		for(uint i=0; i<_listTell->size(); i++){
-			Teller *_t = new Teller(tId++);
-			_listTell->push_back(*_t);
+		for(uint i=0; i<listTell.capacity(); i++){
+			Teller t = Teller(tId++);
+			listTell.push_back(t);
 		}
+	}
+	for(uint i=0; i<listTell.size(); i++){
+		std::cout<<listTell.at(i).GetId()<<std::endl;
 	}
 }
 
@@ -64,7 +67,7 @@ void Marshal::EnqEvent(Event *_e){
 void Marshal::ReqCustomer(int id){
 	if(singleQ){
 		if(_customerQ->Length()>0){
-			Teller temp = _listTell->at(id);
+			Teller temp = listTell.at(id);
 			temp.qCust(_customerQ->popTop());
 		}
 	}

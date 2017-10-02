@@ -51,7 +51,7 @@ private:
 	//this is the single customer queue
 	static CustQueue *_customerQ;
 	//this is the list of tellers
-	static vectTell *_listTell;
+	static vectTell listTell;
 	//this is the list of serviced customers
 	static ListCust *_servedCust;
 	static int cNum, tellerNum;

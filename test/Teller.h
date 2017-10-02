@@ -17,9 +17,9 @@ public:
 	Teller(int id);
 	~Teller();
 private:
-	CustQueue cQueue;
+	CustQueue *_cQueue;
 	//total rest time
-	const int tRest;
+	const int tRest=600;
 	bool present;
 	int id;
 };

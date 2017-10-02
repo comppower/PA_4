@@ -7,13 +7,15 @@
 
 #include "Teller.h"
 #include "Marshal.h"
-
+#include<stdlib.h>
 Teller::Teller(int id){
 	this->id=id;
-	cQueue=new CustQueue();
-	tRest=600;
+	_cQueue=new CustQueue();
 	present = true;
 }
 
+Teller::~Teller(){
+	delete _cQueue;
+}
 
 

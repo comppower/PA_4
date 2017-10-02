@@ -21,8 +21,8 @@ using ListTell=std::list<Teller>;
 //ever be 1 instance required
 class Marshal{
 public:
-	Marshal Marshal(int cNum, int tellerNum, int simTime, int avgServeTime);
-	Marshal ~Marshal();
+	Marshal(int cNum, int tellerNum, int simTime, int avgServeTime);
+	~Marshal();
 	//gets the lines for the tellers set up
 	static void initTellers();
 	//finds a customer for the teller,

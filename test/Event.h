@@ -17,7 +17,7 @@ public:
 	~Event();
 	int getTime();
 	int getId();
-	bool operator <(const Event *_e1, const Event *_e2);
+	bool operator <(const Event *_e1);
 	EventType getType();
 private:
 	int time;

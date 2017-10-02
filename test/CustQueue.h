@@ -13,8 +13,10 @@ using ListC=std::list<Customer>;
 #define CUSTQUEUE_H_
 class CustQueue{
 public:
-	const Customer popTop();
-	const Customer peekTop();
+	//these methods return the pointer of the
+	//customer in the list (don't forget deletions)
+	Customer *popTop();
+	Customer *peekTop();
 	void addCust(Customer *_c);
 	//constructor
 	CustQueue();

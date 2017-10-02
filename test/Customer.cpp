@@ -5,6 +5,7 @@
  *      Author: klibby
  */
 #include "Customer.h"
+#include <stdlib.h>
 
 Customer::Customer(float timeIn, int id){
 	this->timeIn=timeIn;
@@ -12,7 +13,7 @@ Customer::Customer(float timeIn, int id){
 	this->id=id;
 }
 Customer::~Customer(){
-	delete this;
+
 }
 const float Customer::getInTime(){
 	return this->timeIn;

@@ -31,7 +31,9 @@ EventType Event::getType(){
 	return this->type;
 }
 
-
+bool operator <(Event const &e1, Event const &e2){
+	return e1.time>e2.time;
+}
 
 
 

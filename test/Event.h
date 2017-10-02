@@ -18,8 +18,9 @@ public:
 	int getId();
 	//bool operator<(Event e1, Event e2);
 	EventType getType();
-	float time;
+	friend bool operator < (Event const &, Event const &);
 private:
+	float time;
 	int id;
 	EventType type;
 };

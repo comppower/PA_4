@@ -12,14 +12,8 @@
 #include "Teller.h"
 #include "Event.h"
 
-struct OrderByTime{
-	bool operator()(Event const &a, Event const &b)
-	{
-		return a.time>b.time;
-	}
-};
 
-typedef std::priority_queue<Event, std::vector<Event>, OrderByTime> EventQueue;
+typedef std::priority_queue<Event> EventQueue;
 using ListCust=std::list<Customer>;
 using ListTell=std::list<Teller>;
 

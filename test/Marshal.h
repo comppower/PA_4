@@ -25,7 +25,7 @@ public:
 	static void init(int cNum, int tellerNum, int simTime, int avgServeTime);
 	~Marshal();
 	//gets the lines for the tellers set up
-	static void initTellers();
+	static void InitTellers();
 	//this enqueues an event based on the
 	//time it occurs
 	static void EnqEvent(Event *_e);
@@ -44,14 +44,15 @@ public:
 	static float avgServeTime();
 
 private:
+	Marshal();
 	static EventQueue *_eventQ;
 	static float clock;
 	//this is the single customer queue
 	static CustQueue *_customerQ;
 	//this is the list of tellers
-	static ListTell listTell;
+	static ListTell *_listTell;
 	//this is the list of serviced customers
-	static ListCust *_listCust;
+	static ListCust *_servedCust;
 	static int cNum, tellerNum;
 	static float serveTime, simTime;
 	static int cId, tId;

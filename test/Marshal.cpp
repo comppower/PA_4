@@ -9,11 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 
-/**
- * goes through and adds the customer events to the list
- * initializes the teller list. It also initializes the
- * breaks for the teller
- */
+//sets up the marshaller varaibles
+//these are just placeholders before init can be called
 EventQueue *Marshal::_eventQ =new EventQueue();
 float Marshal::clock =0;
 CustQueue *Marshal::_customerQ = new CustQueue();
@@ -26,18 +23,21 @@ float Marshal::simTime=0;
 int Marshal::cId=0;
 int Marshal::tId=0;
 
+//because this is a static class
+//the constructor doesn't need to be called
+//or do anything. This is done via init
 Marshal::Marshal(){}
+
+/**
+ * goes through and adds the customer events to the list
+ * initializes the teller list. It also initializes the
+ * breaks for the teller
+ */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);
 		_eventQ->push(*_e);
-	}
-	Event e=_eventQ->top();
-	while(!_eventQ->empty()){
-		std::cout<<e.getTime()<<std::endl;
-		_eventQ->pop();
-		e=_eventQ->top();
 	}
 }
 
@@ -68,3 +68,11 @@ float Marshal::now(){
 float Marshal::avgServeTime(){
 	return 0;
 }
+
+//prints the event queue
+/*Event e=_eventQ->top();
+while(!_eventQ->empty()){
+	std::cout<<e.getTime()<<std::endl;
+	_eventQ->pop();
+	e=_eventQ->top();
+}*/

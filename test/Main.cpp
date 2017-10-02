@@ -12,10 +12,12 @@
 #include "Event.h"
 #include "Customer.h"
 #include "CustQueue.h"
+#include "Marshal.h"
 
 
 int main(){
 	srand(time(NULL));
+	Marshal::init(5, 0, 60, 3);
 	return 0;
 }
 

@@ -25,7 +25,9 @@ Event::~Event(){
 int Event::getId(){
 	return id;
 }
-
+float Event::getTime(){
+	return time;
+}
 //returns the type
 EventType Event::getType(){
 	return this->type;

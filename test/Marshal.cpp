@@ -64,8 +64,41 @@ void Marshal::RunSim(){
 	while(!_eventQ->empty()){
 		Event e = _eventQ->top();
 		EventType type = e.getType();
+		clock=e.getTime();
+		//Creates a switch statement for a type
 		switch(type){
-		case:
+		case enqCust:
+			if(singleQ){
+				_customerQ->addCust(new Customer(Marshal::now(), cId++));
+			}
+			break;
+
+		case reqCust:
+			for(int i=0; i<listTell.capacity(); i++){
+				Teller t = listTell.at(i);
+				if(t.GetId()==e.getId()){
+					listTell.erase(listTell.begin()+i);
+					if(singleQ){
+						if(_customerQ->Length()>0){
+							t.qCust(_customerQ->popTop());
+							listTell.push_back(t);
+						}
+					}
+				}
+			}
+			break;
+		case compRest:
+			break;
+		case compServe:
+			for(int i=0; i<listTell.capacity(); i++){
+				Teller t = listTell.at(i);
+				if(t.GetId()==e.getId()){
+					listTell.erase(listTell.begin()+i);
+					t.CompService();
+					listTell.push_back(t);
+				}
+			}
+			break;
 		}
 	}
 	//pops first event

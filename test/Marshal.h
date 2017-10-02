@@ -25,12 +25,23 @@ public:
 	~Marshal();
 	//gets the lines for the tellers set up
 	static void initTellers();
-	//finds a customer for the teller,
-	//returns null if there are no more
-	static Customer reqCustomer();
+	//this enqueues an event based on the
+	//time it occurs
+	static void EnqEvent(Event *_e);
+	//puts a customer in the teller's
+	//queue if one is available
+	static void ReqCustomer(int id);
 	//gets the sum of the wait times from
 	//the tellers
-	static int runSum();
+	static int RunSum();
+	//puts the customer into the list of
+	//serviced customers
+	static void StoreCust(Customer *_c);
+	//returns the current time
+	static float now();
+	//returns the average service time
+	static float avgServeTime();
+
 private:
 	static EventQueue eventQ;
 	static float clock;
@@ -41,7 +52,7 @@ private:
 	//this is the list of serviced customers
 	static ListCust listCust;
 	static int cNum, tellerNum;
-	static float avgServeTime, simTime;
+	static float serveTime, simTime;
 };
 
 

@@ -11,16 +11,20 @@
 
 class Teller{
 public:
-	void reqService();
-	void compService();
+	void ReqService();
+	void CompService();
+	//gets the time the rest will be done
+	int GetRestTime();
 	//constructors
 	Teller(int id);
 	~Teller();
 private:
+	//gets the time the service will be done
+	int GetCompServeTime();
 	CustQueue *_cQueue;
 	//total rest time
 	const int tRest=600;
-	bool present;
+	bool available;
 	int id;
 };
 

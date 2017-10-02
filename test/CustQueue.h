@@ -17,6 +17,7 @@ public:
 	//customer in the list (don't forget deletions)
 	Customer *popTop();
 	Customer *peekTop();
+	int Length();
 	void addCust(Customer *_c);
 	//constructor
 	CustQueue();

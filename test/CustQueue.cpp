@@ -37,4 +37,8 @@ Customer *CustQueue::popTop(){
 	return _c;
 }
 
+int CustQueue::Length(){
+	return _listC->size();
+}
+
 

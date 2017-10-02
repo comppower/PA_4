@@ -1,4 +1,4 @@
-/*
+/*c
  * Event.h
  *
  *  Created on: Oct 1, 2017
@@ -8,7 +8,7 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 
-enum EventType {enqCust, reqCust, rest, compRest, compService};
+enum EventType {enqCust, reqCust, compRest, compServe};
 
 class Event{
 public:

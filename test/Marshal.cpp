@@ -60,6 +60,21 @@ void Marshal::InitTellers(){
 	}
 }
 
+void Marshal::RunSim(){
+	while(!_eventQ->empty()){
+		Event e = _eventQ->top();
+		EventType type = e.getType();
+		switch(type){
+		case:
+		}
+	}
+	//pops first event
+	//check to see type and id
+	//case switch on type
+	//execute on item
+	//push back if needed
+}
+
 void Marshal::EnqEvent(Event *_e){
 	_eventQ->push(*_e);
 }
@@ -73,7 +88,8 @@ void Marshal::ReqCustomer(int id){
 	}
 }
 
-int Marshal::RunSum(){
+
+int Marshal::CalcSum(){
 	return 0;
 }
 

@@ -32,9 +32,11 @@ public:
 	//puts a customer in the teller's
 	//queue if one is available
 	static void ReqCustomer(int id);
+	//runs the simulation
+	static void RunSim();
 	//gets the sum of the wait times from
 	//the tellers
-	static int RunSum();
+	static int CalcSum();
 	//puts the customer into the list of
 	//serviced customers
 	static void StoreCust(Customer *_c);

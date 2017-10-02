@@ -15,12 +15,11 @@ public:
 	Event(float time, EventType type, int id);
 	Event(float time, EventType type);
 	~Event();
-	const int getTime();
 	int getId();
 	//bool operator<(Event e1, Event e2);
 	EventType getType();
-private:
 	float time;
+private:
 	int id;
 	EventType type;
 };

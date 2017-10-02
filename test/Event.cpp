@@ -21,18 +21,11 @@ Event::Event(float time, EventType type){
 Event::~Event(){
 
 }
-//This returns the time of the event
-const int Event::getTime(){
-	return time;
-}
 //This returns the Id of the people
 int Event::getId(){
 	return id;
 }
-//This flips the definition of the operator for the queue
-bool operator<(const Event e1, const Event e2){
-	return e1.getTime() >e2.getTime();
-}
+
 //returns the type
 EventType Event::getType(){
 	return this->type;

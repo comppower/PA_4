@@ -14,7 +14,7 @@
  * breaks for the teller
  */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
-	_eventQ=new EventQueue();
+	cId=0; tId=0;
 	for(int i=0; i<cNum; i++){
 		float time= simTime*rand()/float(RAND_MAX);
 		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);

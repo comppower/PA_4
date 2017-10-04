@@ -16,7 +16,7 @@ public:
 	void CompRest();
 	void qCust(Customer *_c);
 	//gets the time the rest will be done
-	int GetRestTime();
+	float GetRestTime();
 	int GetId();
 	//constructors
 	Teller(int id);
@@ -24,7 +24,7 @@ public:
 	~Teller();
 private:
 	//gets the time the service will be done
-	int GetCompServeTime();
+	float GetCompServeTime();
 	CustQueue *_cQueue;
 	//total rest time
 	static const int tRest=10;

@@ -74,11 +74,11 @@ void Teller::CompRest(){
 /**
  * @returns the time the rest is over
  */
-int Teller::GetRestTime(){
+float Teller::GetRestTime(){
 	return Marshal::now()+((tRest*rand())/float(RAND_MAX));
 }
 
-int Teller::GetCompServeTime(){
+float Teller::GetCompServeTime(){
 	return Marshal::now()+((Marshal::avgServeTime()*rand())/float(RAND_MAX));
 }
 

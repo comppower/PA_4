@@ -74,12 +74,13 @@ void Teller::CompRest(){
 /**
  * @returns the time the rest is over
  */
+//TODO Fix the math here
 float Teller::GetRestTime(){
-	return Marshal::now()+((tRest*rand())/float(RAND_MAX));
+	return Marshal::now()+tRest*(rand()/float(RAND_MAX));
 }
 
 float Teller::GetCompServeTime(){
-	return Marshal::now()+((Marshal::avgServeTime()*rand())/float(RAND_MAX));
+	return Marshal::now()+2*Marshal::avgServeTime()*(rand()/float(RAND_MAX));
 }
 
 void Teller::qCust(Customer *_c){

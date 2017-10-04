@@ -9,6 +9,7 @@
 #include "Marshal.h"
 #include <stdlib.h>
 #include <cstdlib>
+#include <iostream>
 
 /**
  * This inits a teller and has it ask for a customer

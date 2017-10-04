@@ -58,6 +58,7 @@ void Marshal::InitTellers(){
 	for(uint i=0; i<listTell.size(); i++){
 		std::cout<<listTell.at(i).GetId()<<std::endl;
 	}
+	printEQ();
 }
 
 void Marshal::RunSim() {
@@ -115,7 +116,7 @@ void Marshal::RunSim() {
 			}
 			break;
 		}//switch
-		printEQ();
+		//printEQ();
 	}//while
 }
 
@@ -150,13 +151,29 @@ float Marshal::avgServeTime(){
 }
 
 void Marshal::printEQ(){
-	EventQueue temp= *_eventQ;
-	Event e=temp.top();
-	while(!temp.empty()){
-		std::cout<<"Time: "<<e.getTime()<<" "<<e.getType()<<" Id:"<<e.getId()<<std::endl;
+	EventQueue temp = *_eventQ;
+	Event e = temp.top();
+	temp.pop();
+	while (!temp.empty()) {
+		switch (e.getType()) {
+		case EventType::enqCust:
+			std::cout << "Event Type: EnqCust Id: " << e.getId() << std::endl;
+			break;
+		case EventType::reqCust:
+			std::cout << "Event Type: ReqCust Id: " << e.getId() << std::endl;
+			break;
+		case EventType::compRest:
+			std::cout << "Event Type: CompRest Id: " << e.getId() << std::endl;
+			break;
+		case EventType::compServe:
+			std::cout << "Event Type: CompServe Id: " << e.getId() << std::endl;
+			break;
+			temp.pop();
+		}
+		e = temp.top();
 		temp.pop();
-		e=temp.top();
 	}
+	std::cout << "End of current event queue---" << std::endl;
 }
 
 //prints the event queue

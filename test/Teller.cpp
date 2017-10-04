@@ -42,11 +42,11 @@ void Teller::ReqService(){
 	//otherwise ask the marshal for a customer
 	else{
 		//this puts the customer into the queue
-		Marshal::ReqCustomer(id);
+		//Marshal::ReqCustomer(id);
 		//if there's still no customer then go on "break"
 		if(_cQueue->Length()==0){
 			available=false;
-			Event *_e = new Event(Teller::GetRestTime(), EventType::compRest);
+			Event *_e = new Event(Teller::GetRestTime(), EventType::compRest, id);
 			Marshal::EnqEvent(_e);
 		}
 		else{

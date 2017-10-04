@@ -39,6 +39,7 @@ Marshal::Marshal(){}
  */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	listTell.reserve(tellerNum);
+	serveTime=avgServeTime;
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		//set to 0 so all customers come in at beginning
@@ -78,7 +79,7 @@ void Marshal::RunSim() {
 			break;
 
 		case reqCust:
-			for (uint i = 0; !found || i < listTell.size(); i++) {
+			for (uint i = 0; !found&&i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
 					found = true;
@@ -86,37 +87,39 @@ void Marshal::RunSim() {
 					if (singleQ) {
 						if (_customerQ->Length() > 0) {
 							t.qCust(_customerQ->popTop());
-							listTell.push_back(t);
 						}
 					}
+					t.ReqService();
+					listTell.push_back(t);
 				}
 			}
 			break;
 
 		case compRest:
-			for (uint i = 0; !found||i < listTell.capacity(); i++) {
+			for (uint i = 0; !found&&i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
 					found =true;
-					listTell.erase(listTell.begin() + i);
+					listTell.erase(listTell.begin()+i);
 					t.CompRest();
+					listTell.push_back(t);
 				}
 			}
 			break;
 
 		case compServe:
-			for (uint i = 0;  !found||i < listTell.capacity(); i++) {
+			for (uint i = 0;  !found&&i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
 					found =true;
-					listTell.erase(listTell.begin() + i);
+					listTell.erase(listTell.begin()+i);
 					t.CompService();
 					listTell.push_back(t);
 				}
 			}
 			break;
 		}//switch
-		//printEQ();
+		printEQ();
 	}//while
 }
 
@@ -157,23 +160,23 @@ void Marshal::printEQ(){
 	while (!temp.empty()) {
 		switch (e.getType()) {
 		case EventType::enqCust:
-			std::cout << "Event Type: EnqCust Id: " << e.getId() << std::endl;
+			std::cout << "Event Type: EnqCust Id: " << e.getId() <<"Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::reqCust:
-			std::cout << "Event Type: ReqCust Id: " << e.getId() << std::endl;
+			std::cout << "Event Type: ReqCust Id: " << e.getId()<<"Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::compRest:
-			std::cout << "Event Type: CompRest Id: " << e.getId() << std::endl;
+			std::cout << "Event Type: CompRest Id: " << e.getId()<<"Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::compServe:
-			std::cout << "Event Type: CompServe Id: " << e.getId() << std::endl;
+			std::cout << "Event Type: CompServe Id: " << e.getId()<<" Time: "<<e.getTime()<< std::endl;
 			break;
 			temp.pop();
 		}
 		e = temp.top();
 		temp.pop();
 	}
-	std::cout << "End of current event queue---" << std::endl;
+	std::cout << "End of current event queue---" << std::endl<<std::endl;
 }
 
 //prints the event queue

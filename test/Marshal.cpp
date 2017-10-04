@@ -40,6 +40,7 @@ Marshal::Marshal(){}
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	listTell.reserve(tellerNum);
 	serveTime=avgServeTime;
+	Marshal::simTime=simTime;
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		//set to 0 so all customers come in at beginning
@@ -143,6 +144,7 @@ int Marshal::CalcSum(){
 
 void Marshal::StoreCust(Customer *_c){
 	_servedCust->push_front(*_c);
+	std::cout<<"Cust served: "<<_servedCust->size()<<std::endl;
 }
 
 float Marshal::now(){
@@ -155,9 +157,8 @@ float Marshal::avgServeTime(){
 
 void Marshal::printEQ(){
 	EventQueue temp = *_eventQ;
-	Event e = temp.top();
-	temp.pop();
 	while (!temp.empty()) {
+		Event e = temp.top();
 		switch (e.getType()) {
 		case EventType::enqCust:
 			std::cout << "Event Type: EnqCust Id: " << e.getId() <<"Time: "<<e.getTime()<< std::endl;
@@ -173,12 +174,14 @@ void Marshal::printEQ(){
 			break;
 			temp.pop();
 		}
-		e = temp.top();
 		temp.pop();
 	}
 	std::cout << "End of current event queue---" << std::endl<<std::endl;
 }
 
+float Marshal::getSimTime(){
+	return simTime;
+}
 //prints the event queue
 /*Event e=_eventQ->top();
 while(!_eventQ->empty()){

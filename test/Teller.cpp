@@ -49,17 +49,19 @@ void Teller::ReqService(){
 			Event *_e = new Event(Teller::GetRestTime(), EventType::compRest, id);
 			Marshal::EnqEvent(_e);
 		}
+		//otherwise complete service
 		else{
 			Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
 			Marshal::EnqEvent(_e);
 		}
 	}
 }
-
+//TODO get the customers enqueued right
+//could be a problem with pointers
 void Teller::CompService(){
 	//creates customer with placeholder values
 	Customer *_c = new Customer(-1,-1);
-	_c=_cQueue->popTop();
+	*_c=_cQueue->popTop();
 	_c->setOutTime(Marshal::now());
 	Marshal::StoreCust(_c);
 	//ask the Marshal for a customer
@@ -68,13 +70,20 @@ void Teller::CompService(){
 }
 
 void Teller::CompRest(){
-	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
-	Marshal::EnqEvent(_e);
+
+	if(Marshal::now()<Marshal::getSimTime()){
+		Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
+		Marshal::EnqEvent(_e);
+	}
+	//if the sim is over dont enqueue
+	else{
+		available=false;
+	}
+
 }
 /**
  * @returns the time the rest is over
  */
-//TODO Fix the math here
 float Teller::GetRestTime(){
 	return Marshal::now()+tRest*(rand()/float(RAND_MAX));
 }

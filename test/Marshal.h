@@ -46,7 +46,7 @@ public:
 	static float now();
 	//returns the average service time
 	static float avgServeTime();
-
+	static float getSimTime();
 private:
 	Marshal();
 	static EventQueue *_eventQ;

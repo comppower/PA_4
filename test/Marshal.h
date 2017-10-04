@@ -38,7 +38,7 @@ public:
 	static void printEQ();
 	//gets the sum of the wait times from
 	//the tellers
-	static int CalcSum();
+	static float CalcSum();
 	//puts the customer into the list of
 	//serviced customers
 	static void StoreCust(Customer *_c);

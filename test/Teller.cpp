@@ -20,6 +20,7 @@ Teller::Teller(int id){
 	available = true;
 	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
 	Marshal::EnqEvent(_e);
+	totalDownTime=0;
 }
 /**
  * default constructor for vector list
@@ -28,6 +29,7 @@ Teller::Teller(){
 	this->id=-1;
 	_cQueue=new CustQueue();
 	available=false;
+	totalDownTime=0;
 }
 Teller::~Teller(){
 	//delete _cQueue;
@@ -46,7 +48,9 @@ void Teller::ReqService(){
 		//if there's still no customer then go on "break"
 		if(_cQueue->Length()==0){
 			available=false;
-			Event *_e = new Event(Teller::GetRestTime(), EventType::compRest, id);
+			float restTime =Teller::GetRestTime();
+			totalDownTime+=restTime;
+			Event *_e = new Event(restTime, EventType::compRest, id);
 			Marshal::EnqEvent(_e);
 		}
 		//otherwise complete service
@@ -56,12 +60,12 @@ void Teller::ReqService(){
 		}
 	}
 }
-//TODO get the customers enqueued right
+
 //could be a problem with pointers
 void Teller::CompService(){
 	//creates customer with placeholder values
 	Customer *_c = new Customer(-1,-1);
-	*_c=_cQueue->popTop();
+	_c=_cQueue->popTop();
 	_c->setOutTime(Marshal::now());
 	Marshal::StoreCust(_c);
 	//ask the Marshal for a customer
@@ -72,6 +76,7 @@ void Teller::CompService(){
 void Teller::CompRest(){
 
 	if(Marshal::now()<Marshal::getSimTime()){
+		available=true;
 		Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
 		Marshal::EnqEvent(_e);
 	}

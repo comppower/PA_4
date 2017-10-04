@@ -19,6 +19,7 @@ int main(){
 	srand(time(NULL));
 	Marshal::init(4, 3, 10, 3);
 	Marshal::RunSim();
+	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
 	return 0;
 }
 

@@ -74,8 +74,14 @@ void Marshal::RunSim() {
 		bool found = false;
 		switch (type) {
 		case enqCust:
-			if (singleQ) {
+			if (singleQ){
 				_customerQ->addCust(new Customer(Marshal::now(), cId++));
+			}
+			else if(!singleQ){
+				int minSize=
+				for(uint i=0; i<listTell.size(); i++){
+
+				}
 			}
 			break;
 
@@ -138,8 +144,16 @@ void Marshal::ReqCustomer(int id){
 }
 
 
-int Marshal::CalcSum(){
-	return 0;
+float Marshal::CalcSum(){
+	float sum=0;
+	ListCust temp = *_servedCust;
+	for(uint i=0; i<temp.size(); i++){
+		Customer c= _servedCust->front();
+		sum+=c.getOutTime();
+		sum-=c.getInTime();
+		_servedCust->pop_front();
+	}
+	return sum;
 }
 
 void Marshal::StoreCust(Customer *_c){
@@ -161,16 +175,16 @@ void Marshal::printEQ(){
 		Event e = temp.top();
 		switch (e.getType()) {
 		case EventType::enqCust:
-			std::cout << "Event Type: EnqCust Id: " << e.getId() <<"Time: "<<e.getTime()<< std::endl;
+			std::cout << "Event Type: EnqCust Id: " <<e.getId() <<" Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::reqCust:
-			std::cout << "Event Type: ReqCust Id: " << e.getId()<<"Time: "<<e.getTime()<< std::endl;
+			std::cout << "Event Type: ReqCust Id: " <<e.getId()<<" Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::compRest:
-			std::cout << "Event Type: CompRest Id: " << e.getId()<<"Time: "<<e.getTime()<< std::endl;
+			std::cout << "Event Type: CompRest Id: " <<e.getId()<<" Time: "<<e.getTime()<< std::endl;
 			break;
 		case EventType::compServe:
-			std::cout << "Event Type: CompServe Id: " << e.getId()<<" Time: "<<e.getTime()<< std::endl;
+			std::cout << "Event Type: CompServe Id: " <<e.getId()<<" Time: "<<e.getTime()<< std::endl;
 			break;
 			temp.pop();
 		}
@@ -182,10 +196,4 @@ void Marshal::printEQ(){
 float Marshal::getSimTime(){
 	return simTime;
 }
-//prints the event queue
-/*Event e=_eventQ->top();
-while(!_eventQ->empty()){
-	std::cout<<e.getTime()<<std::endl;
-	_eventQ->pop();
-	e=_eventQ->top();
-}*/
+

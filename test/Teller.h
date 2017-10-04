@@ -27,8 +27,9 @@ private:
 	float GetCompServeTime();
 	CustQueue *_cQueue;
 	//total rest time
-	static const int tRest=10;
+	static const int tRest=5;
 	bool available;
+	float totalDownTime;
 	int id;
 };
 

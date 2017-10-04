@@ -15,6 +15,8 @@ public:
 	void CompService();
 	void CompRest();
 	void qCust(Customer *_c);
+	int CustQSize();
+	bool IsAvailable();
 	//gets the time the rest will be done
 	float GetRestTime();
 	int GetId();

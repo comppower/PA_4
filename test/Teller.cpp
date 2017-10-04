@@ -86,6 +86,9 @@ void Teller::CompRest(){
 	}
 
 }
+int Teller::CustQSize(){
+	return _cQueue->Length();
+}
 /**
  * @returns the time the rest is over
  */
@@ -103,4 +106,8 @@ void Teller::qCust(Customer *_c){
 
 int Teller::GetId(){
 	return id;
+}
+
+bool Teller::IsAvailable(){
+	return available;
 }

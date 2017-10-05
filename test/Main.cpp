@@ -13,7 +13,7 @@
 #include "Customer.h"
 #include "CustQueue.h"
 #include "Marshal.h"
-#include "List.h"
+#include "List"
 
 
 int main(){
@@ -21,7 +21,7 @@ int main(){
 	Marshal::init(14, 3, 10, 3);
 	Marshal::RunSim();
 	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;*/
-	Customer c =Customer(0,0);
+	/*Customer c =Customer(0,0);
 	Customer *c2= new Customer(1,1);
 	Customer *c3 = new Customer(2,2);
 	Customer *c4=new Customer(3,3);
@@ -34,7 +34,8 @@ int main(){
 	lc.push_back(*c3);
 	lc.push_back(*c4);
 	lc.erase(1);
-	return 0;
+	std::cout<<lc.at(1).getId()<<std::endl;
+	return 0;*/
 }
 
 //test for adding customers

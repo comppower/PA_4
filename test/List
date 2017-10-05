@@ -5,8 +5,8 @@
  *      Author: klibby
  */
 
-#ifndef LIST_H_
-#define LIST_H_
+#ifndef LIST_
+#define LIST_
 #include<iostream>
 template <class T>
 class Node{
@@ -121,4 +121,4 @@ private:
 };
 
 
-#endif /* LIST_H_ */
+#endif /* LIST_ */

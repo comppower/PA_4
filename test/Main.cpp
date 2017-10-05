@@ -15,13 +15,14 @@
 #include "Marshal.h"
 
 
-int main(){
-	srand(time(NULL));
-	Marshal::init(14, 3, 10, 3);
-	Marshal::RunSim();
-	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
-
-	return 0;
+int main(int argc, char *argv[]){
+	if(argc<5){
+		std::cout<<"invalid arg no."<<std::endl;
+	}
+	else{
+		Marshal::init(4, 3, 10, .5);
+	}
+    return 0;
 }
 
 //test for adding customers

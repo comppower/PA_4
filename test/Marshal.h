@@ -22,7 +22,7 @@ using TempListTell=std::list<Teller>;
 //ever be 1 instance required
 class Marshal{
 public:
-	static void init(int cNum, int tellerNum, int simTime, int avgServeTime);
+	static void init(int cNum, int tellerNum, float simTime, float avgServeTime);
 	~Marshal();
 	//gets the lines for the tellers set up
 	static void InitTellers();

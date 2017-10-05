@@ -40,14 +40,13 @@ Marshal::Marshal(){}
  * initializes the teller list. It also initializes the
  * breaks for the teller
  */
-void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
+void Marshal::init(int cNum, int tellerNum, float simTime, float avgServeTime){
 	listTell.reserve(tellerNum);
 	serveTime=avgServeTime;
 	Marshal::simTime=simTime;
 	Marshal::InitTellers();
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
-		//set to 0 so all customers come in at beginning
 		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);
 		Marshal::EnqEvent(_e);
 	}

@@ -47,13 +47,13 @@ public:
 	//returns the average service time
 	static float avgServeTime();
 	static float getSimTime();
+	static bool singleQ;
 private:
 	Marshal();
 	static void EnQCustFromIndex(int index);
 	static void ProcTellerReq();
 	static TempListTell *GetSmallestQueue();
 	static EventQueue *_eventQ;
-	static bool singleQ;
 	static float clock;
 	//this is the single customer queue
 	static CustQueue *_customerQ;

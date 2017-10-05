@@ -15,11 +15,33 @@
 #include "Marshal.h"
 
 
-int main(){
-	srand(time(NULL));
-	Marshal::init(4, 3, 10, 3);
-	Marshal::RunSim();
-	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+int main(int argc, char *argv[]){
+	if(argc<5){
+		std::cout<<"invalid arg no."<<std::endl;
+	}
+	else if(argc==5){
+		srand(time(NULL));
+		Marshal::init(atoi(argv[1]), atoi(argv[2]), atof(argv[3]), atof(argv[4]));
+		Marshal::RunSim();
+		std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+	}
+	else if(argc==6){
+		srand(atoi(argv[5]));
+		//runs the sim twice
+		Marshal::singleQ=true;
+		Marshal::init(atoi(argv[1]), atoi(argv[2]), atof(argv[3]), atof(argv[4]));
+		Marshal::RunSim();
+		std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+
+		Marshal::singleQ=false;
+		Marshal::init(atoi(argv[1]), atoi(argv[2]), atof(argv[3]), atof(argv[4]));
+		Marshal::RunSim();
+		std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+	}
+	else{
+		std::cout<<"invalid arg no."<<std::endl;
+	}
+
 
 	return 0;
 }

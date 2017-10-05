@@ -270,7 +270,10 @@ void Marshal::ReqCustomer(int id){
 }
 
 
-float Marshal::CalcSum(){
+void Marshal::CalcStat(){
+	//prints out average time in bank
+	//total customers served
+	//t
 	float sum=0;
 	ListCust temp = *_servedCust;
 	for(uint i=0; i<temp.size(); i++){
@@ -279,7 +282,7 @@ float Marshal::CalcSum(){
 		sum-=c.getInTime();
 		_servedCust->pop_front();
 	}
-	return sum;
+
 }
 
 void Marshal::StoreCust(Customer *_c){

@@ -21,10 +21,17 @@ int main(){
 	Marshal::init(14, 3, 10, 3);
 	Marshal::RunSim();
 	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;*/
-	Customer c =Customer(0,0)+
+	Customer c =Customer(0,0);
 	Customer *c2= new Customer(1,1);
 	Customer *c3 = new Customer(2,2);
-	Node<Customer> n=Node<Customer>();
+	Node<Customer> n= Node<Customer>(c2);
+	Node<Customer> n2=Node<Customer>(c3);
+	n.SetNext(&n2);
+	std::cout<<n.GetNext()->Get()->getId()<<std::endl;
+	List<Customer> lc = List<Customer>();
+	lc.push_back(*c2);
+	lc.push_back(*c3);
+	lc.pop_front();
 	return 0;
 }
 

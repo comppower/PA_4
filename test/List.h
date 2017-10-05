@@ -94,15 +94,30 @@ public:
 		delete _temp;
 	}
 	T pop_front(){
-		Node<T> temp= *_head;
+		Node<T> *_newHead= new Node<T>();
+		Node<T> headVal=*_head;
+		_newHead=_head->GetNext();
 		delete _head;
-
-		return *(temp.Get());
+		_head=_newHead;
+		count--;
+		return *(headVal.Get());
 	}
-	void clear();
+	void clear(){
+		run_clear(_head);
+		delete _head;
+		_head=0;
+		count=0;
+	}
 private:
 	Node<T> *_head;
 	int count;
+	void run_clear(Node<T> *_head){
+		if(_head->GetNext()){
+			run_clear(_head->GetNext());
+			delete _head->GetNext();
+			_head->SetNext(0);
+		}
+	}
 };
 
 

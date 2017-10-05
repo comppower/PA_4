@@ -24,6 +24,7 @@ int main(){
 	Customer c =Customer(0,0);
 	Customer *c2= new Customer(1,1);
 	Customer *c3 = new Customer(2,2);
+	Customer *c4=new Customer(3,3);
 	Node<Customer> n= Node<Customer>(c2);
 	Node<Customer> n2=Node<Customer>(c3);
 	n.SetNext(&n2);
@@ -31,7 +32,8 @@ int main(){
 	List<Customer> lc = List<Customer>();
 	lc.push_back(*c2);
 	lc.push_back(*c3);
-	lc.pop_front();
+	lc.push_back(*c4);
+	lc.erase(1);
 	return 0;
 }
 

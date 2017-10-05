@@ -78,15 +78,48 @@ void Marshal::EnQCustFromIndex(int index) {
 		if (t.GetId() == index) {
 			found = true;
 			listTell.erase(listTell.begin() + i);
-			if (_customerQ->Length() > 0) {
-				t.qCust(_customerQ->popTop());
+			if(singleQ){
+				if (_customerQ->Length() > 0) {
+					t.qCust(_customerQ->popTop());
+				}
+			}
+			else{
+				t.qCust(new Customer(Marshal::now(), cId++));
 			}
 			t.ReqService();
 			listTell.push_back(t);
 		}
 	}
 }
+TempListTell Marshal::PrimeSmallestQueue(){
+	try{
+		int startIndex=0;
+		Teller t = listTell.at(index);
+		while(!t.IsAvailable()){
+			index++;
+			t=listTell.at(index);
+		}
+		TempListTell *_custLineOpns = new TempListTell();
+		int minQueue=t.CustQSize();
+		int count;
+		for (uint i = startIndex; i < listTell.size(); i++) {
+		t = listTell.at(i);
+		if (t.CustQSize() < minQueue&& t.IsAvailable()) {
+			minQueue = t.CustQSize();
+			_custLineOpns->clear();
+			count = 0;
+			_custLineOpns->push_back(t);
+		} else if (t.CustQSize() == minQueue&& t.IsAvailable()) {
+			_custLineOpns->push_back(t);
+			count++;
+		}
+	}
 
+	}
+	catch(const std::out_of_range& e){
+		std::cout<<"The teller size is less than 0"<<std::endl;
+	}
+}
 void Marshal::RunSim() {
 	while (!_eventQ->empty()) {
 		Event e = _eventQ->top();
@@ -98,109 +131,98 @@ void Marshal::RunSim() {
 		bool found = false;
 		switch (type) {
 		case enqCust:
-			if (singleQ){
+			if (singleQ) {
 				_customerQ->addCust(new Customer(Marshal::now(), cId++));
-			}
-			else if(!singleQ){
-				try{
-					TempListTell listOpns = TempListTell();
+			} else if (!singleQ) {
+				try {
+					//TODO remove this section of code and replace with
+					//the method that returns the list
+					TempListTell *_listOpns = new TempListTell();
 					//elements in the list
-					int count=0;
-					Teller t=listTell.at(0);
-					int minQueue=t.CustQSize();
+					int count = 0;
+					Teller t;
+					int minQueue=0;
 					//starting at 0 to ensure at least 1 teller is added
-					for(uint i=0; i<listTell.size(); i++){
-						t=listTell.at(i);
-						if(t.CustQSize()<minQueue){
-							minQueue=t.CustQSize();
-							listOpns.clear();
-							count=0;
-							listOpns.push_back(t);
-						}
-						else if(t.CustQSize()==minQueue){
-							listOpns.push_back(t);
-							count++;
-						}
-					}
+
 					//pick a random member from the list
-					int targetIndex =roundf(count*(rand()/float(RAND_MAX)));
-					for(int i=0; i<targetIndex; i++){
-						listOpns.pop_front();
+					int targetIndex = roundf(
+							count * (rand() / float(RAND_MAX)));
+					for (int i = 0; i < targetIndex; i++) {
+						_listOpns->pop_front();
 					}
 					//find the member and enqueue the customer and return it
 					//to the list
-					EnQCustFromIndex(listOpns.front().GetId());
+					EnQCustFromIndex(_listOpns->front().GetId());
 
-				}
-				catch(const std::out_of_range& e){
-					std::cerr<<"Out of range error "<< e.what()<<std::endl;
-					std::cout<<"Check teller list size enq"<<std::endl;
+				} catch (const std::out_of_range& e) {
+					std::cerr << "Out of range error " << e.what() << std::endl;
+					std::cout << "Check teller list size enq" << std::endl;
 				}
 			}
 			break;
 
-		case reqCust:
-		{
+		case reqCust: {
 			//TODO create the non single queue behavior for this
-			if(singleQ){
+			if (singleQ) {
 				EnQCustFromIndex(e.getId());
 			}
 			//make sure to grab the 2nd person off of whatever queue and
 			//make sure it gets removed from the queue
-			else if(!singleQ){
-			try {
-				//this is the list of tellers with more than
-				//2 people in their queue
-				TempListTell listOpns = TempListTell();
-				//elements in the list
-				int count=-1;
-				Teller t=listTell.at(0);
-				//starting at 0 to ensure at least 1 teller is added
-				for(uint i=0; i<listTell.size(); i++) {
-					t=listTell.at(i);
-					if(t.CustQSize()>1) {
-						listOpns.push_back(t);
-						count++;
-					}
-				}
-				//if the count is -1 don't add a customer and
-				//just call reqService
-				//pick a random member from the list
-				Customer c= Customer(-1, -1);
-				if(count>-1){
-					int targetIndex =roundf(count*(rand()/float(RAND_MAX)));
-					for(int i=0; i<targetIndex; i++) {
-						listOpns.pop_front();
-					}
-					c=listOpns.front().PullCust(1);
-				}
-				//find the member and enqueue the customer and return it
-				//to the list
-				for (uint i = 0; !found && i < listTell.size(); i++) {
-					Teller t = listTell.at(i);
-					if (t.GetId() == e.getId()) {
-						found = true;
-						if(c.getId()>-1){
-							t.qCust(&c);
+			else if (!singleQ) {
+				try {
+					//this is the list of tellers with more than
+					//2 people in their queue
+					TempListTell listOpns = TempListTell();
+					//elements in the list
+					int count = -1;
+					Teller t = listTell.at(0);
+					//starting at 0 to ensure at least 1 teller is added
+					for (uint i = 0; i < listTell.size(); i++) {
+						t = listTell.at(i);
+						if (t.CustQSize() > 1&& t.IsAvailable()) {
+							listOpns.push_back(t);
+							count++;
 						}
-						listTell.erase(listTell.begin() + i);
-						t.ReqService();
-						listTell.push_back(t);
 					}
-				}
-			}
-			catch (const std::out_of_range& e) {
+					//if the count is -1 don't add a customer and
+					//just call reqService
+					//pick a random member from the list
+					Customer c = Customer(-1, -1);
+					if (count > -1) {
+						int targetIndex = roundf(
+								count * (rand() / float(RAND_MAX)));
+						for (int i = 0; i < targetIndex; i++) {
+							listOpns.pop_front();
+						}
+						c = listOpns.front().PullCust(1);
+					}
+					//find the member and enqueue the customer and return it
+					//to the list
+					for (uint i = 0; !found && i < listTell.size(); i++) {
+						Teller t = listTell.at(i);
+						if (t.GetId() == e.getId()) {
+							found = true;
+							if (c.getId() > -1) {
+								t.qCust(&c);
+							}
+							listTell.erase(listTell.begin() + i);
+							t.ReqService();
+							listTell.push_back(t);
+						}
+					}
+				} catch (const std::out_of_range& e) {
 					std::cerr << "Out of range error " << e.what() << std::endl;
 					std::cout << "Check teller list size req" << std::endl;
+				}
 			}
 			break;
 		}
 		case compRest:
-			for (uint i = 0; !found&&i < listTell.size(); i++) {
+			for (uint i = 0; !found && i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
-					found =true;
-					listTell.erase(listTell.begin()+i);
+					found = true;
+					listTell.erase(listTell.begin() + i);
 					t.CompRest();
 					listTell.push_back(t);
 				}
@@ -208,11 +230,11 @@ void Marshal::RunSim() {
 			break;
 
 		case compServe:
-			for (uint i = 0;  !found&&i < listTell.size(); i++) {
+			for (uint i = 0; !found && i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
-					found =true;
-					listTell.erase(listTell.begin()+i);
+					found = true;
+					listTell.erase(listTell.begin() + i);
 					t.CompService();
 					listTell.push_back(t);
 				}
@@ -221,7 +243,6 @@ void Marshal::RunSim() {
 		}//switch
 		printEQ();
 	}//while
-}
 }
 
 void Marshal::EnqEvent(Event *_e){

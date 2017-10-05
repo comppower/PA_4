@@ -24,3 +24,9 @@ Event.o: Event.cpp Event.h
 
 docs: 
 	doxygen
+	
+clean:
+	rm -f *.o *.exe *.out Main
+	rm -f ./html ./latex
+
+	

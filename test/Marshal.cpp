@@ -270,8 +270,6 @@ void Marshal::CalcStat(){
 	//prints out average time in bank
 	//total customers served
 	//t
-	float stddev=0;
-	float avgTimeInBank=0;
 	int CustServed=0;
 	float totalTime=0;
 	ListCust temp = *_servedCust;

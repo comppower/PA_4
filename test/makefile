@@ -4,10 +4,13 @@ CFLAGS =-g
 
 all: Main docs
 
-Main: Main.o  Main.cpp
-	g++ $(CFLAGS) -Wall Marshal.o Teller.o CustQueue.o Customer.o Event.o -o test
-	
-Marhsal.o: Marshal.cpp Marshal.h
+Main: Main.o Teller.o Event.o 
+	g++ $(CFLAGS) -Wall Marshal.o Teller.o CustQueue.o Customer.o Event.o -o Main
+
+Main.o: Main.cpp Marshal.o
+	g++ $(CFLAGS) -Wall -c Main.cpp
+
+Marhsal.o: Teller.o Marshal.cpp Marshal.h
 	g++ $(CFLAGS) -Wall -c Marshal.cpp
 	
 Teller.o: Teller.cpp Teller.h CustQueue.o 

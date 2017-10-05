@@ -6,6 +6,7 @@
  */
 #include "Event.h"
 #include<stdlib.h>
+//TODO Create a custom event queue and get the makefile to switch between the two
 //sets every aspect of the id
 Event::Event(float time, EventType type, int id){
 	this->time=time;

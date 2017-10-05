@@ -135,7 +135,6 @@ void Marshal::RunSim() {
 				_customerQ->addCust(new Customer(Marshal::now(), cId++));
 			} else if (!singleQ) {
 				try {
-					//TODO remove this section of code and replace with
 					//the method that returns the list
 					TempListTell *_listOpns=GetSmallestQueue();
 					//pick a random member from the list
@@ -155,7 +154,6 @@ void Marshal::RunSim() {
 			break;
 
 		case reqCust: {
-			//TODO create the non single queue behavior for this
 			if (singleQ) {
 				EnQCustFromIndex(e.getId());
 			}

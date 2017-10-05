@@ -13,14 +13,18 @@
 #include "Customer.h"
 #include "CustQueue.h"
 #include "Marshal.h"
+#include "List.h"
 
 
 int main(){
-	srand(time(NULL));
+	/*srand(time(NULL));
 	Marshal::init(14, 3, 10, 3);
 	Marshal::RunSim();
-	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
-
+	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;*/
+	Customer c =Customer(0,0)+
+	Customer *c2= new Customer(1,1);
+	Customer *c3 = new Customer(2,2);
+	Node<Customer> n=Node<Customer>();
 	return 0;
 }
 

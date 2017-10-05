@@ -22,36 +22,82 @@ using TempListTell=std::list<Teller>;
 //ever be 1 instance required
 class Marshal{
 public:
+	/**
+	 * init goes through and adds the customer events to the list
+	 *initializes the teller list and the breaks for the tellers
+	 *@param cNum customer number
+	 *@param tellerNum teller number
+	 *@param simTime simulation run time
+	 *@param avgServiceTime average service time
+	 */
 	static void init(int cNum, int tellerNum, int simTime, int avgServeTime);
 	~Marshal();
-	//gets the lines for the tellers set up
+	/**
+	 * InitTellers gets the lines for the tellers set up
+	 */
 	static void InitTellers();
-	//this enqueues an event based on the
-	//time it occurs
+	/**
+	 * EnqEvent enqueues an event based on the
+	 * time it occurs
+	 */
 	static void EnqEvent(Event *_e);
-	//puts a customer in the teller's
-	//queue if one is available
+	/**
+	 * ReqCustomer puts a customer in the
+	 * teller's queue if one is available
+	 * @param id id of the customer
+	 */
 	static void ReqCustomer(int id);
-	//runs the simulation
+	/**
+	 * RunSim runs the simulation
+	 */
 	static void RunSim();
-	//prints the event Q
+	/**
+	 * printEQ prints the event queue
+	 */
 	static void printEQ();
-	//gets the sum of the wait times from
-	//the tellers
-	static void ClalcStat();
-	//puts the customer into the list of
-	//serviced customers
+	/**
+	 * CalcSum prints statistics of the
+	 * simulation
+	 */
+	static void CalcStat();
+	/**
+	 * StoreCust puts the customer
+	 * into the list of serviced customers
+	 * @param *_c is a pointer to the customer
+	 */
 	static void StoreCust(Customer *_c);
-	//returns the current time
+
+	/**
+	 * now returns the current time
+	 */
 	static float now();
-	//returns the average service time
+	/**
+	 * avgServiceTime returns the
+	 * average service time
+	 */
 	static float avgServeTime();
+	/**
+	 * getSimTime returns the current
+	 * simulation time
+	 */
 	static float getSimTime();
 	static bool singleQ;
 private:
 	Marshal();
+	/**
+	 * EnQCustFromIndex enqueues the customer
+	 * from the given index
+	 * @param index customer index
+	 */
 	static void EnQCustFromIndex(int index);
+	/**
+	 * ProcTellerReq proctors a teller request
+	 */
 	static void ProcTellerReq();
+	/**
+	 * *GetSmallestQueue returns the smalles of
+	 * the tellers' queues
+	 */
 	static TempListTell *GetSmallestQueue();
 	static EventQueue *_eventQ;
 	static float clock;

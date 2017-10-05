@@ -35,11 +35,7 @@ int Marshal::tId=0;
 //or do anything. This is done via init
 Marshal::Marshal(){}
 
-/**
- * goes through and adds the customer events to the list
- * initializes the teller list. It also initializes the
- * breaks for the teller
- */
+
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	listTell.reserve(tellerNum);
 	serveTime=avgServeTime;
@@ -63,8 +59,8 @@ void Marshal::ProcTellerReq(){
 }
 void Marshal::InitTellers(){
 	for(uint i=0; i<listTell.capacity(); i++){
-		Teller t = Teller(tId++);
-		listTell.push_back(t);
+		Teller *t = new Teller(tId++);
+		listTell.push_back(*t);
 	}
 	for(uint i=0; i<listTell.size(); i++){
 		std::cout<<listTell.at(i).GetId()<<std::endl;
@@ -250,7 +246,7 @@ void Marshal::RunSim() {
 			break;
 		}
 		}//switch
-		printEQ();
+		//printEQ();
 		//advances the event queue
 		_eventQ->pop();
 	}//while
@@ -274,14 +270,20 @@ void Marshal::CalcStat(){
 	//prints out average time in bank
 	//total customers served
 	//t
-	float sum=0;
+	float stddev=0;
+	float avgTimeInBank=0;
+	int CustServed=0;
+	float totalTime=0;
 	ListCust temp = *_servedCust;
 	for(uint i=0; i<temp.size(); i++){
+		std::cout<<"Average Time in Bank "<<std::endl;
 		Customer c= _servedCust->front();
-		sum+=c.getOutTime();
-		sum-=c.getInTime();
+		totalTime+=c.getOutTime();
+		totalTime-=c.getInTime();
 		_servedCust->pop_front();
+		CustServed++;
 	}
+	std::cout<<"Average Time in Bank "<<totalTime/CustServed<<std::endl;
 
 }
 

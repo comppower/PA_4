@@ -1,4 +1,5 @@
-The makefile currently doesn’t work!
+Fixed makefile issue. Program still has trouble running
+
 Summary of the program:
 This program run a simulation of a certain amount of customers and tellers 
 over a certain amount of time and average service time. The program takes in 

@@ -5,7 +5,7 @@ CFLAGS =-g
 all: Main docs
 
 Main: Main.o Teller.o Event.o 
-	g++ $(CFLAGS) -Wall Marshal.o Teller.o CustQueue.o Customer.o Event.o -o Main
+	g++ $(CFLAGS) -Wall Marshal.o Teller.o CustQueue.o Customer.o Event.o Main.o -o Main
 
 Main.o: Main.cpp Marshal.o
 	g++ $(CFLAGS) -Wall -c Main.cpp
@@ -30,6 +30,6 @@ docs:
 	
 clean:
 	rm -f *.o *.exe *.out Main
-	rm -f ./html ./latex
+	rm -rf ./html ./latex
 
 	

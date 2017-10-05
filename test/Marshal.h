@@ -50,7 +50,7 @@ public:
 private:
 	Marshal();
 	static void EnQCustFromIndex(int index);
-
+	static void ProcTellerReq();
 	static EventQueue *_eventQ;
 	static bool singleQ;
 	static float clock;

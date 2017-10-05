@@ -17,6 +17,7 @@ public:
 	void qCust(Customer *_c);
 	int CustQSize();
 	bool IsAvailable();
+	Customer PullCust(int index);
 	//gets the time the rest will be done
 	float GetRestTime();
 	int GetId();

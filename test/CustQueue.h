@@ -8,6 +8,7 @@
 #include "Customer.h"
 
 using ListC=std::list<Customer>;
+using CustItr=ListC::iterator;
 
 #ifndef CUSTQUEUE_H_
 #define CUSTQUEUE_H_
@@ -19,6 +20,7 @@ public:
 	Customer *peekTop();
 	int Length();
 	void addCust(Customer *_c);
+	Customer PullAt(int index);
 	//constructor
 	CustQueue();
 	~CustQueue();

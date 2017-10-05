@@ -6,6 +6,7 @@
  */
 #include "CustQueue.h"
 #include <stdlib.h>
+
 CustQueue::CustQueue(){
 	_listC=new ListC();
 }
@@ -39,6 +40,14 @@ Customer *CustQueue::popTop(){
 
 int CustQueue::Length(){
 	return _listC->size();
+}
+
+Customer CustQueue::PullAt(int index){
+	CustItr cItr= _listC->begin();
+	advance(cItr,index);
+	Customer c = *cItr;
+	_listC->erase(cItr);
+	return c;
 }
 
 

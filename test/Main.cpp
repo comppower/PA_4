@@ -20,6 +20,7 @@ int main(){
 	Marshal::init(4, 3, 10, 3);
 	Marshal::RunSim();
 	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+
 	return 0;
 }
 
@@ -36,4 +37,11 @@ delete _c1;
 delete _c2;
 delete _cq;*/
 
-
+//for pulling from a list at a specified point
+/*
+ * 	while(custTest.Length()>0){
+		Customer c = custTest.PullAt(0);
+		std::cout<<c.getId()<<std::endl;
+	}
+	std::cout<<custTest.Length()<<std::endl;
+ */

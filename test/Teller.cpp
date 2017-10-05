@@ -18,8 +18,6 @@ Teller::Teller(int id){
 	this->id=id;
 	_cQueue=new CustQueue();
 	available = true;
-	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
-	Marshal::EnqEvent(_e);
 	totalDownTime=0;
 }
 /**
@@ -110,4 +108,7 @@ int Teller::GetId(){
 
 bool Teller::IsAvailable(){
 	return available;
+}
+Customer Teller::PullCust(int index){
+	return _cQueue->PullAt(index);
 }

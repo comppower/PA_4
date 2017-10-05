@@ -16,7 +16,7 @@
 typedef std::priority_queue<Event> EventQueue;
 using ListCust=std::list<Customer>;
 using VectTell=std::vector<Teller>;
-
+using TempListTell=std::list<Teller>;
 //Marshal is the C++ equivalent of a static class
 //all of the methods are static because there will only
 //ever be 1 instance required
@@ -51,7 +51,7 @@ private:
 	Marshal();
 	static void EnQCustFromIndex(int index);
 	static void ProcTellerReq();
-	static TempListTell PrimeSmallestQueue();
+	static TempListTell *GetSmallestQueue();
 	static EventQueue *_eventQ;
 	static bool singleQ;
 	static float clock;

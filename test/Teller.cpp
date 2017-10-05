@@ -35,7 +35,7 @@ Teller::~Teller(){
 
 void Teller::ReqService(){
 	//see if theres anyone else to serve
-	if(_cQueue->Length()>0){
+	if(_cQueue->Length()==1){
 		Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
 		Marshal::EnqEvent(_e);
 	}
@@ -52,10 +52,10 @@ void Teller::ReqService(){
 			Marshal::EnqEvent(_e);
 		}
 		//otherwise complete service
-		else{
+		/*else{
 			Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
 			Marshal::EnqEvent(_e);
-		}
+		}*/
 	}
 }
 
@@ -67,8 +67,15 @@ void Teller::CompService(){
 	_c->setOutTime(Marshal::now());
 	Marshal::StoreCust(_c);
 	//ask the Marshal for a customer
-	Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
-	Marshal::EnqEvent(_e);
+	if(_cQueue->Length()<1){
+		Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
+		Marshal::EnqEvent(_e);
+	}
+	else{
+		Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
+		Marshal::EnqEvent(_e);
+	}
+
 }
 
 void Teller::CompRest(){

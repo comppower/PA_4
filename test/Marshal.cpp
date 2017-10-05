@@ -11,7 +11,6 @@
 #include <iostream>
 #include <math.h>
 
-using TempListTell=std::list<Teller>;
 
 
 //sets up the marshaller varaibles
@@ -52,7 +51,9 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 		Event *_e=new Event(0, EventType::enqCust, Marshal::cId++);
 		Marshal::EnqEvent(_e);
 	}
-	Marshal::ProcTellerReq();
+	if(singleQ){
+		Marshal::ProcTellerReq();
+	}
 }
 void Marshal::ProcTellerReq(){
 	for (uint i = 0; i < listTell.size(); i++) {
@@ -83,7 +84,7 @@ void Marshal::EnQCustFromIndex(int index) {
 					t.qCust(_customerQ->popTop());
 				}
 			}
-			else{
+			else if(!singleQ){
 				t.qCust(new Customer(Marshal::now(), cId++));
 			}
 			t.ReqService();
@@ -91,44 +92,43 @@ void Marshal::EnQCustFromIndex(int index) {
 		}
 	}
 }
-TempListTell Marshal::PrimeSmallestQueue(){
+TempListTell *Marshal::GetSmallestQueue(){
+	TempListTell *_custLineOpns = new TempListTell();
 	try{
 		int startIndex=0;
-		Teller t = listTell.at(index);
+		Teller t = listTell.at(startIndex);
 		while(!t.IsAvailable()){
-			index++;
-			t=listTell.at(index);
+			startIndex++;
+			t=listTell.at(startIndex);
 		}
-		TempListTell *_custLineOpns = new TempListTell();
 		int minQueue=t.CustQSize();
 		int count;
 		for (uint i = startIndex; i < listTell.size(); i++) {
-		t = listTell.at(i);
-		if (t.CustQSize() < minQueue&& t.IsAvailable()) {
-			minQueue = t.CustQSize();
-			_custLineOpns->clear();
-			count = 0;
-			_custLineOpns->push_back(t);
-		} else if (t.CustQSize() == minQueue&& t.IsAvailable()) {
-			_custLineOpns->push_back(t);
-			count++;
+			t = listTell.at(i);
+			if (t.CustQSize() < minQueue&& t.IsAvailable()) {
+				minQueue = t.CustQSize();
+				_custLineOpns->clear();
+				count = 0;
+				_custLineOpns->push_back(t);
+			} else if (t.CustQSize() == minQueue&& t.IsAvailable()) {
+				_custLineOpns->push_back(t);
+				count++;
+			}
 		}
-	}
 
 	}
 	catch(const std::out_of_range& e){
 		std::cout<<"The teller size is less than 0"<<std::endl;
 	}
+	return _custLineOpns;
 }
 void Marshal::RunSim() {
+
 	while (!_eventQ->empty()) {
 		Event e = _eventQ->top();
 		EventType type = e.getType();
 		clock = e.getTime();
-		//advances the event queue
-		_eventQ->pop();
 		//Creates a switch statement for a type
-		bool found = false;
 		switch (type) {
 		case enqCust:
 			if (singleQ) {
@@ -137,16 +137,9 @@ void Marshal::RunSim() {
 				try {
 					//TODO remove this section of code and replace with
 					//the method that returns the list
-					TempListTell *_listOpns = new TempListTell();
-					//elements in the list
-					int count = 0;
-					Teller t;
-					int minQueue=0;
-					//starting at 0 to ensure at least 1 teller is added
-
+					TempListTell *_listOpns=GetSmallestQueue();
 					//pick a random member from the list
-					int targetIndex = roundf(
-							count * (rand() / float(RAND_MAX)));
+					int targetIndex = (int) lround(_listOpns->size() * (rand() / float(RAND_MAX)));
 					for (int i = 0; i < targetIndex; i++) {
 						_listOpns->pop_front();
 					}
@@ -172,52 +165,68 @@ void Marshal::RunSim() {
 				try {
 					//this is the list of tellers with more than
 					//2 people in their queue
-					TempListTell listOpns = TempListTell();
+					TempListTell *_listOpns = new TempListTell();
 					//elements in the list
 					int count = -1;
 					Teller t = listTell.at(0);
-					//starting at 0 to ensure at least 1 teller is added
+					//starting at 0 to ensure teller 0 is checked
 					for (uint i = 0; i < listTell.size(); i++) {
 						t = listTell.at(i);
 						if (t.CustQSize() > 1&& t.IsAvailable()) {
-							listOpns.push_back(t);
+							_listOpns->push_back(t);
 							count++;
 						}
 					}
 					//if the count is -1 don't add a customer and
 					//just call reqService
-					//pick a random member from the list
-					Customer c = Customer(-1, -1);
+
+					int pullID=-1;
 					if (count > -1) {
-						int targetIndex = roundf(
-								count * (rand() / float(RAND_MAX)));
+						//pick a random member from the list
+						int targetIndex = (int) roundl(count * (rand() / float(RAND_MAX)));
 						for (int i = 0; i < targetIndex; i++) {
-							listOpns.pop_front();
+							_listOpns->pop_front();
 						}
-						c = listOpns.front().PullCust(1);
+						//and get its ID
+						pullID = _listOpns->front().GetId();
 					}
-					//find the member and enqueue the customer and return it
-					//to the list
-					for (uint i = 0; !found && i < listTell.size(); i++) {
+					//find and pull the customer from the right teller
+					bool pulledCust=false;
+					Customer toMove = Customer(-1, -1);
+					for (uint i = 0; !pulledCust&&pullID>=0; i++) {
+						Teller t = listTell.at(i);
+						if (t.GetId() == pullID) {
+							pulledCust = true;
+							listTell.erase(listTell.begin() + i);
+							toMove=t.PullCust(1);
+							listTell.push_back(t);
+						}
+					}
+					//find the teller to put the customer into
+					bool putCust=false;
+					for (uint i = 0; !putCust; i++) {
 						Teller t = listTell.at(i);
 						if (t.GetId() == e.getId()) {
-							found = true;
-							if (c.getId() > -1) {
-								t.qCust(&c);
-							}
+							putCust = true;
 							listTell.erase(listTell.begin() + i);
+							if(pullID>=0){
+								t.qCust(&toMove);
+							}
 							t.ReqService();
 							listTell.push_back(t);
 						}
 					}
-				} catch (const std::out_of_range& e) {
+					delete _listOpns;
+				}
+				catch (const std::out_of_range& e) {
 					std::cerr << "Out of range error " << e.what() << std::endl;
 					std::cout << "Check teller list size req" << std::endl;
 				}
 			}
 			break;
 		}
-		case compRest:
+		case compRest:{
+			bool found=false;
 			for (uint i = 0; !found && i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
@@ -228,8 +237,9 @@ void Marshal::RunSim() {
 				}
 			}
 			break;
-
-		case compServe:
+		}
+		case compServe:{
+			bool found=false;
 			for (uint i = 0; !found && i < listTell.size(); i++) {
 				Teller t = listTell.at(i);
 				if (t.GetId() == e.getId()) {
@@ -240,8 +250,11 @@ void Marshal::RunSim() {
 				}
 			}
 			break;
+		}
 		}//switch
 		printEQ();
+		//advances the event queue
+		_eventQ->pop();
 	}//while
 }
 

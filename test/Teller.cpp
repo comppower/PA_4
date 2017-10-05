@@ -30,7 +30,7 @@ Teller::Teller(){
 	totalDownTime=0;
 }
 Teller::~Teller(){
-	//delete _cQueue;
+	delete _cQueue;
 }
 
 void Teller::ReqService(){

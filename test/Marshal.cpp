@@ -44,6 +44,7 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	Marshal::tellerNum=tellerNum;
 	serveTime=avgServeTime;
 	Marshal::simTime=simTime;
+	Marshal::listTell= List<Teller>();
 	Marshal::InitTellers();
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
@@ -63,9 +64,9 @@ void Marshal::ProcTellerReq(){
 }
 void Marshal::InitTellers(){
 	for(int i=0; i<tellerNum; i++){
-		Teller *t = new Teller();
-		*t=Teller(tId++);
-		listTell.push_back(t);
+		/*Teller *t = new Teller();
+		*t=Teller(tId++);*/
+		listTell.push_back(new Teller(tId++));
 	}
 	for(int i=0; i<listTell.size(); i++){
 		std::cout<<listTell.at(i).GetId()<<std::endl;
@@ -75,8 +76,8 @@ void Marshal::InitTellers(){
 
 void Marshal::EnQCustFromIndex(int index) {
 	bool found = false;
+	Teller *t = new Teller();
 	for (int i = 0; !found && i < listTell.size(); i++) {
-		Teller *t = new Teller();
 		*t=listTell.at(i);
 		if (t->GetId() == index) {
 			found = true;
@@ -92,10 +93,8 @@ void Marshal::EnQCustFromIndex(int index) {
 			t->ReqService();
 			listTell.push_back(t);
 		}
-		else{
-			delete t;
-		}
 	}
+	delete t;
 }
 TempListTell *Marshal::GetSmallestQueue(){
 	TempListTell *_custLineOpns = new TempListTell();

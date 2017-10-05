@@ -43,6 +43,10 @@ public:
 		this->_head=0;
 		this->l_size=0;
 	}
+	~List(){
+		run_clear(_head);
+		delete _head;
+	}
 	void push_back(T *_val){
 
 		//however it immediately sets it
@@ -106,16 +110,22 @@ public:
 		return l_size;
 	}
 	void clear(){
-		run_clear(_head);
-		delete _head;
-		_head=0;
-		l_size=0;
+		if(_head){
+			Node<T> *_temp=_head->GetNext();
+			while(_temp!=NULL){
+				_head->SetNext(_temp->GetNext());
+				_temp->SetNext(NULL);
+				delete _temp;
+				_temp=_head->GetNext();
+			}
+		}
 	}
 private:
 	Node<T> *_head;
 	int l_size;
+	//TODO fix seg fault here
 	void run_clear(Node<T> *_head){
-		if(_head->GetNext()){
+		if(_head&&_head->GetNext()){
 			run_clear(_head->GetNext());
 			delete _head->GetNext();
 			_head->SetNext(0);

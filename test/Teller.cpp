@@ -34,7 +34,8 @@ Teller::~Teller(){
 }
 
 void Teller::ReqService(){
-	//see if theres anyone else to serve
+	//see if exactly one person in the queue. If there's more than one, the subsequent
+	//calls will be handled by the compService action
 	if(_cQueue->Length()==1){
 		Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
 		Marshal::EnqEvent(_e);
@@ -79,7 +80,9 @@ void Teller::CompService(){
 }
 
 void Teller::CompRest(){
-
+	//this enqueues from reqCust because when the
+	//teller rests there are no more customers in its queue so it
+	//needs to attempt to get another one
 	if(Marshal::now()<Marshal::getSimTime()){
 		available=true;
 		Event *_e = new Event(Marshal::now(), EventType::reqCust, id);

@@ -48,7 +48,7 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
 		//set to 0 so all customers come in at beginning
-		Event *_e=new Event(0, EventType::enqCust, Marshal::cId++);
+		Event *_e=new Event(time, EventType::enqCust, Marshal::cId++);
 		Marshal::EnqEvent(_e);
 	}
 	if(singleQ){

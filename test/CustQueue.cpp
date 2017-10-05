@@ -15,7 +15,7 @@ CustQueue::~CustQueue(){
 	free(_listC);
 }
 void CustQueue::addCust(Customer *_c){
-	_listC->push_back(*_c);
+	_listC->push_back(_c);
 }
 /**
  * This looks at the top of the customer queue
@@ -43,10 +43,8 @@ int CustQueue::Length(){
 }
 
 Customer CustQueue::PullAt(int index){
-	CustItr cItr= _listC->begin();
-	advance(cItr,index);
-	Customer c = *cItr;
-	_listC->erase(cItr);
+	Customer c = _listC->at(index);
+	_listC->erase(index);
 	return c;
 }
 

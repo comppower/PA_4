@@ -17,25 +17,11 @@
 
 
 int main(){
-	/*srand(time(NULL));
+	srand(time(NULL));
 	Marshal::init(14, 3, 10, 3);
 	Marshal::RunSim();
-	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;*/
-	/*Customer c =Customer(0,0);
-	Customer *c2= new Customer(1,1);
-	Customer *c3 = new Customer(2,2);
-	Customer *c4=new Customer(3,3);
-	Node<Customer> n= Node<Customer>(c2);
-	Node<Customer> n2=Node<Customer>(c3);
-	n.SetNext(&n2);
-	std::cout<<n.GetNext()->Get()->getId()<<std::endl;
-	List<Customer> lc = List<Customer>();
-	lc.push_back(*c2);
-	lc.push_back(*c3);
-	lc.push_back(*c4);
-	lc.erase(1);
-	std::cout<<lc.at(1).getId()<<std::endl;
-	return 0;*/
+	std::cout<<"Serve Time "<<Marshal::CalcSum()<<std::endl;
+
 }
 
 //test for adding customers
@@ -59,3 +45,20 @@ delete _cq;*/
 	}
 	std::cout<<custTest.Length()<<std::endl;
  */
+
+//test for custom list
+/*Customer c =Customer(0,0);
+Customer *c2= new Customer(1,1);
+Customer *c3 = new Customer(2,2);
+Customer *c4=new Customer(3,3);
+Node<Customer> n= Node<Customer>(c2);
+Node<Customer> n2=Node<Customer>(c3);
+n.SetNext(&n2);
+std::cout<<n.GetNext()->Get()->getId()<<std::endl;
+List<Customer> lc = List<Customer>();
+lc.push_back(*c2);
+lc.push_back(*c3);
+lc.push_back(*c4);
+lc.erase(1);
+std::cout<<lc.at(1).getId()<<std::endl;
+return 0;*/

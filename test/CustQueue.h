@@ -4,11 +4,10 @@
  *  Created on: Oct 1, 2017
  *      Author: klibby
  */
-#include <list>
+#include "List"
 #include "Customer.h"
 
-using ListC=std::list<Customer>;
-using CustItr=ListC::iterator;
+using ListC=List<Customer>;
 
 #ifndef CUSTQUEUE_H_
 #define CUSTQUEUE_H_

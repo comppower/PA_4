@@ -1,5 +1,5 @@
 /*
- * List.h
+ * List
  *
  *  Created on: Oct 5, 2017
  *      Author: klibby
@@ -41,19 +41,16 @@ class List{
 public:
 	List(){
 		this->_head=0;
-		this->count=0;
+		this->l_size=0;
 	}
-	void push_back(T val){
-		//this bypasses the constructor for T
-		//because it can't be accessed
-		T *_temp = (T*) malloc(sizeof(T));
+	void push_back(T *_val){
+
 		//however it immediately sets it
 		//to the val, which must be a valid
 		//object
-		*_temp=val;
 		if(!_head){
-			_head= new Node<T>(_temp);
-			count++;
+			_head= new Node<T>(_val);
+			l_size++;
 		}
 		else{
 			Node<T> *_curNode= new Node<T>;
@@ -61,12 +58,12 @@ public:
 			while(_curNode->GetNext()){
 				_curNode=_curNode->GetNext();
 			}
-			_curNode->SetNext(new Node<T>(_temp));
-			count++;
+			_curNode->SetNext(new Node<T>(_val));
+			l_size++;
 		}
 	}
 	T at(int index){
-		if(index>=count){
+		if(index>=l_size){
 			std::cout<<"out of bounds call"<<std::endl;
 		}
 		Node<T> *_curNode= new Node<T>;
@@ -77,7 +74,7 @@ public:
 		return *(_curNode->Get());
 	}
 	void erase(int index){
-		if(index>=count){
+		if(index>=l_size){
 			std::cout<<"out of bounds call"<<std::endl;
 		}
 		Node<T> *_curNode= new Node<T>;
@@ -90,7 +87,7 @@ public:
 		}
 		_temp=_curNode->GetNext();
 		_curNode->SetNext(_temp->GetNext());
-		count--;
+		l_size--;
 		delete _temp;
 	}
 	T pop_front(){
@@ -99,18 +96,24 @@ public:
 		_newHead=_head->GetNext();
 		delete _head;
 		_head=_newHead;
-		count--;
+		l_size--;
 		return *(headVal.Get());
+	}
+	T front(){
+		return *(_head->Get());
+	}
+	int size(){
+		return l_size;
 	}
 	void clear(){
 		run_clear(_head);
 		delete _head;
 		_head=0;
-		count=0;
+		l_size=0;
 	}
 private:
 	Node<T> *_head;
-	int count;
+	int l_size;
 	void run_clear(Node<T> *_head){
 		if(_head->GetNext()){
 			run_clear(_head->GetNext());

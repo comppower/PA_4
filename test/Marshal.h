@@ -8,15 +8,16 @@
 #ifndef MARSHAL_H_
 #define MARSHAL_H_
 #include <queue>
+#include "List"
 #include "CustQueue.h"
 #include "Teller.h"
 #include "Event.h"
 
 
 typedef std::priority_queue<Event> EventQueue;
-using ListCust=std::list<Customer>;
-using VectTell=std::vector<Teller>;
-using TempListTell=std::list<Teller>;
+using ListCust=List<Customer>;
+using ListTell=List<Teller>;
+using TempListTell=List<Teller>;
 //Marshal is the C++ equivalent of a static class
 //all of the methods are static because there will only
 //ever be 1 instance required
@@ -58,7 +59,7 @@ private:
 	//this is the single customer queue
 	static CustQueue *_customerQ;
 	//this is the list of tellers
-	static VectTell listTell;
+	static ListTell listTell;
 	//this is the list of serviced customers
 	static ListCust *_servedCust;
 	static int cNum, tellerNum;

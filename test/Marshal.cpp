@@ -16,9 +16,9 @@
 //sets up the marshaller varaibles
 //these are just placeholders before init can be called
 EventQueue *Marshal::_eventQ =new EventQueue();
-bool Marshal::singleQ=false;
+bool Marshal::singleQ=true;
 float Marshal::clock =0;
-VectTell Marshal::listTell;
+ListTell Marshal::listTell;
 CustQueue *Marshal::_customerQ = new CustQueue();
 ListCust *Marshal::_servedCust= new ListCust();
 int Marshal::cNum=0;
@@ -41,7 +41,7 @@ Marshal::Marshal(){}
  * breaks for the teller
  */
 void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
-	listTell.reserve(tellerNum);
+	Marshal::tellerNum=tellerNum;
 	serveTime=avgServeTime;
 	Marshal::simTime=simTime;
 	Marshal::InitTellers();
@@ -56,17 +56,18 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	}
 }
 void Marshal::ProcTellerReq(){
-	for (uint i = 0; i < listTell.size(); i++) {
+	for (int i = 0; i < listTell.size(); i++) {
 		Event *_e=new Event(0,EventType::reqCust,(int) i);
 		Marshal::EnqEvent(_e);
 	}
 }
 void Marshal::InitTellers(){
-	for(uint i=0; i<listTell.capacity(); i++){
-		Teller t = Teller(tId++);
+	for(int i=0; i<tellerNum; i++){
+		Teller *t = new Teller();
+		*t=Teller(tId++);
 		listTell.push_back(t);
 	}
-	for(uint i=0; i<listTell.size(); i++){
+	for(int i=0; i<listTell.size(); i++){
 		std::cout<<listTell.at(i).GetId()<<std::endl;
 	}
 	printEQ();
@@ -74,45 +75,55 @@ void Marshal::InitTellers(){
 
 void Marshal::EnQCustFromIndex(int index) {
 	bool found = false;
-	for (uint i = 0; !found && i < listTell.size(); i++) {
-		Teller t = listTell.at(i);
-		if (t.GetId() == index) {
+	for (int i = 0; !found && i < listTell.size(); i++) {
+		Teller *t = new Teller();
+		*t=listTell.at(i);
+		if (t->GetId() == index) {
 			found = true;
-			listTell.erase(listTell.begin() + i);
+			listTell.erase(i);
 			if(singleQ){
 				if (_customerQ->Length() > 0) {
-					t.qCust(_customerQ->popTop());
+					t->qCust(_customerQ->popTop());
 				}
 			}
 			else if(!singleQ){
-				t.qCust(new Customer(Marshal::now(), cId++));
+				t->qCust(new Customer(Marshal::now(), cId++));
 			}
-			t.ReqService();
+			t->ReqService();
 			listTell.push_back(t);
+		}
+		else{
+			delete t;
 		}
 	}
 }
 TempListTell *Marshal::GetSmallestQueue(){
 	TempListTell *_custLineOpns = new TempListTell();
 	try{
+		//finds the first available teller
 		int startIndex=0;
-		Teller t = listTell.at(startIndex);
-		while(!t.IsAvailable()){
+		Teller *t=new Teller();
+		*t = listTell.at(startIndex);
+		while(!t->IsAvailable()){
 			startIndex++;
-			t=listTell.at(startIndex);
+			*t=listTell.at(startIndex);
 		}
-		int minQueue=t.CustQSize();
+		int minQueue=t->CustQSize();
 		int count;
-		for (uint i = startIndex; i < listTell.size(); i++) {
-			t = listTell.at(i);
-			if (t.CustQSize() < minQueue&& t.IsAvailable()) {
-				minQueue = t.CustQSize();
+		for (int i = startIndex; i < listTell.size(); i++) {
+			t=new Teller();
+			*t = listTell.at(i);
+			if (t->CustQSize() < minQueue&& t->IsAvailable()) {
+				minQueue = t->CustQSize();
 				_custLineOpns->clear();
 				count = 0;
 				_custLineOpns->push_back(t);
-			} else if (t.CustQSize() == minQueue&& t.IsAvailable()) {
+			} else if (t->CustQSize() == minQueue&& t->IsAvailable()) {
 				_custLineOpns->push_back(t);
 				count++;
+			}
+			else{
+				delete t;
 			}
 		}
 
@@ -166,14 +177,18 @@ void Marshal::RunSim() {
 					TempListTell *_listOpns = new TempListTell();
 					//elements in the list
 					int count = -1;
-					Teller t = listTell.at(0);
 					//starting at 0 to ensure teller 0 is checked
-					for (uint i = 0; i < listTell.size(); i++) {
-						t = listTell.at(i);
-						if (t.CustQSize() > 1&& t.IsAvailable()) {
+					for (int i = 0; i < listTell.size(); i++) {
+						Teller *t = new Teller();
+						*t = listTell.at(i);
+						if (t->CustQSize() > 1&& t->IsAvailable()) {
 							_listOpns->push_back(t);
 							count++;
 						}
+						else{
+							delete t;
+						}
+
 					}
 					//if the count is -1 don't add a customer and
 					//just call reqService
@@ -191,27 +206,35 @@ void Marshal::RunSim() {
 					//find and pull the customer from the right teller
 					bool pulledCust=false;
 					Customer toMove = Customer(-1, -1);
-					for (uint i = 0; !pulledCust&&pullID>=0; i++) {
-						Teller t = listTell.at(i);
-						if (t.GetId() == pullID) {
+					for (int i = 0; !pulledCust&&pullID>=0; i++) {
+						Teller *t = new Teller();
+						*t=listTell.at(i);
+						if (t->GetId() == pullID) {
 							pulledCust = true;
-							listTell.erase(listTell.begin() + i);
-							toMove=t.PullCust(1);
+							listTell.erase(i);
+							toMove=t->PullCust(1);
 							listTell.push_back(t);
+						}
+						else {
+							delete t;
 						}
 					}
 					//find the teller to put the customer into
 					bool putCust=false;
-					for (uint i = 0; !putCust; i++) {
-						Teller t = listTell.at(i);
-						if (t.GetId() == e.getId()) {
+					for (int i = 0; !putCust; i++) {
+						Teller *t = new Teller();
+						*t=listTell.at(i);
+						if (t->GetId() == e.getId()) {
 							putCust = true;
-							listTell.erase(listTell.begin() + i);
+							listTell.erase(i);
 							if(pullID>=0){
-								t.qCust(&toMove);
+								t->qCust(&toMove);
 							}
-							t.ReqService();
+							t->ReqService();
 							listTell.push_back(t);
+						}
+						else{
+							delete t;
 						}
 					}
 					delete _listOpns;
@@ -225,26 +248,34 @@ void Marshal::RunSim() {
 		}
 		case compRest:{
 			bool found=false;
-			for (uint i = 0; !found && i < listTell.size(); i++) {
-				Teller t = listTell.at(i);
-				if (t.GetId() == e.getId()) {
+			for (int i = 0; !found && i < listTell.size(); i++) {
+				Teller *t = new Teller();
+				*t=listTell.at(i);
+				if (t->GetId() == e.getId()) {
 					found = true;
-					listTell.erase(listTell.begin() + i);
-					t.CompRest();
+					listTell.erase(i);
+					t->CompRest();
 					listTell.push_back(t);
+				}
+				else{
+					delete t;
 				}
 			}
 			break;
 		}
 		case compServe:{
 			bool found=false;
-			for (uint i = 0; !found && i < listTell.size(); i++) {
-				Teller t = listTell.at(i);
-				if (t.GetId() == e.getId()) {
+			for (int i = 0; !found && i < listTell.size(); i++) {
+				Teller *t = new Teller();
+				*t=listTell.at(i);
+				if (t->GetId() == e.getId()) {
 					found = true;
-					listTell.erase(listTell.begin() + i);
-					t.CompService();
+					listTell.erase(i);
+					t->CompService();
 					listTell.push_back(t);
+				}
+				else{
+					delete t;
 				}
 			}
 			break;
@@ -261,19 +292,20 @@ void Marshal::EnqEvent(Event *_e){
 }
 
 void Marshal::ReqCustomer(int id){
-	if(singleQ){
+	/*if(singleQ){
 		if(_customerQ->Length()>0){
-			Teller temp = listTell.at(id);
+			Teller *temp = new Teller();
+			*temp = listTell.at(id);
 			temp.qCust(_customerQ->popTop());
 		}
-	}
+	}*/
 }
 
 
 float Marshal::CalcSum(){
 	float sum=0;
 	ListCust temp = *_servedCust;
-	for(uint i=0; i<temp.size(); i++){
+	for(int i=0; i<temp.size(); i++){
 		Customer c= _servedCust->front();
 		sum+=c.getOutTime();
 		sum-=c.getInTime();
@@ -283,7 +315,7 @@ float Marshal::CalcSum(){
 }
 
 void Marshal::StoreCust(Customer *_c){
-	_servedCust->push_front(*_c);
+	_servedCust->push_back(_c);
 	std::cout<<"Cust served: "<<_servedCust->size()<<std::endl;
 }
 

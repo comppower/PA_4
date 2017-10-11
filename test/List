@@ -20,7 +20,7 @@ public:
 		this->_next=0;
 	}
 	~Node(){
-		delete _val;
+
 	}
 	void SetNext(Node *_next){
 		this->_next= _next;
@@ -44,8 +44,7 @@ public:
 		this->l_size=0;
 	}
 	~List(){
-		run_clear(_head);
-		delete _head;
+		clear(_head);
 	}
 	void push_back(T *_val){
 
@@ -57,8 +56,7 @@ public:
 			l_size++;
 		}
 		else{
-			Node<T> *_curNode= new Node<T>;
-			_curNode=_head;
+			Node<T> *_curNode= _head;
 			while(_curNode->GetNext()){
 				_curNode=_curNode->GetNext();
 			}
@@ -66,7 +64,8 @@ public:
 			l_size++;
 		}
 	}
-	T at(int index){
+	//this gets a member of the list at a specific index
+	T *at(int index){
 		if(index>=l_size){
 			std::cout<<"out of bounds call"<<std::endl;
 		}
@@ -77,38 +76,24 @@ public:
 		}
 		return *(_curNode->Get());
 	}
-	void erase(int index){
-		if(index>=l_size){
-			std::cout<<"out of bounds call"<<std::endl;
-		}
-		Node<T> *_curNode= new Node<T>;
-		Node<T> *_temp= new Node<T>;
-		_curNode=_head;
-		//stops before it hits the actual
-		//item
-		for(int i=0; i<index-1; i++){
-			_curNode=_curNode->GetNext();
-		}
-		_temp=_curNode->GetNext();
-		_curNode->SetNext(_temp->GetNext());
-		l_size--;
-		delete _temp;
-	}
-	T pop_front(){
-		Node<T> *_newHead= new Node<T>();
-		Node<T> headVal=*_head;
-		_newHead=_head->GetNext();
+	//this removes the first member of the list and returns its value
+	T *pop_front(){
+		Node<T> *_newHead= _head->GetNext();
+		T *_headVal=_head->Get();
 		delete _head;
 		_head=_newHead;
 		l_size--;
-		return *(headVal.Get());
+		return _headVal;
 	}
-	T front(){
-		return *(_head->Get());
+	//this gets the pointer to the front-most object
+	T *front(){
+		return _head->Get();
 	}
+	//this gets the size
 	int size(){
 		return l_size;
 	}
+	//this clears the list
 	void clear(){
 		if(_head){
 			Node<T> *_temp=_head->GetNext();
@@ -118,19 +103,12 @@ public:
 				delete _temp;
 				_temp=_head->GetNext();
 			}
+			delete _head;
 		}
 	}
 private:
 	Node<T> *_head;
 	int l_size;
-	//TODO fix seg fault here
-	void run_clear(Node<T> *_head){
-		if(_head&&_head->GetNext()){
-			run_clear(_head->GetNext());
-			delete _head->GetNext();
-			_head->SetNext(0);
-		}
-	}
 };
 
 

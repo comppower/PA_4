@@ -154,7 +154,7 @@ void Marshal::RunSim() {
 					}
 					//find the member and enqueue the customer and return it
 					//to the list
-					EnQCustFromIndex(_listOpns->front().GetId());
+					EnQCustFromIndex(_listOpns->front()->GetId());
 
 				} catch (const std::out_of_range& e) {
 					std::cerr << "Out of range error " << e.what() << std::endl;

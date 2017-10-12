@@ -11,7 +11,6 @@
 #include <cstdlib>
 #include "Event.h"
 #include "Customer.h"
-#include "CustQueue.h"
 #include "Marshal.h"
 #include "List"
 

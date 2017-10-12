@@ -11,7 +11,7 @@ Main.o: Main.cpp Marshal.o
 Marhsal.o: Teller.o Marshal.cpp Marshal.h
 	g++ $(CFLAGS) -Wall -c Marshal.cpp
 	
-Teller.o: Teller.cpp Teller.h CustQueue.o 
+Teller.o: Customer.o Teller.cpp Teller.h  
 	g++ $(CFLAGS) -Wall -c Teller.cpp
 
 #CustQueue.o: CustQueue.cpp CustQueue.h Customer.o

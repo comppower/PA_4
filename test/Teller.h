@@ -5,6 +5,7 @@
  *      Author: klibby
  */
 #include "List"
+#include "Customer.h"
 
 #ifndef TELLER_H_
 #define TELLER_H_

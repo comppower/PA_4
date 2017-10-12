@@ -7,6 +7,7 @@
 
 #include "Teller.h"
 #include "Marshal.h"
+#include "Event.h"
 #include <stdlib.h>
 #include <cstdlib>
 #include <iostream>
@@ -37,7 +38,7 @@ void Teller::ReqService(){
 	//see if exactly one person in the queue. If there's more than one, the subsequent
 	//calls will be handled by the compService action
 	if(_cQueue->size()==1){
-		int outTime= Teller::GetCompServeTime()
+		int outTime= Teller::GetCompServeTime();
 		Event *_e = new Event(outTime, EventType::compServe, id);
 		available=false;
 		_cQueue->pop_front()->setOutTime(outTime);

@@ -71,23 +71,6 @@ void Marshal::InitTellers(){
 	printEQ();
 }
 
-/*void Marshal::EnQCustFromIndex(int index) {
-	bool found = false;
-	Teller *_t = _listTell->at(0);
-	for (int i = 0; !found && i < _listTell->size(); i++) {
-		if (_listTell->at(i)->GetId() == index)
-			_t = _listTell->at(i);
-		found = true;
-		if (singleQ) {
-			if (_customerQ->size() > 0) {
-				_t->qCust(_customerQ->pop_front());
-			}
-		} else if (!singleQ) {
-			_t->qCust(new Customer(Marshal::now(), cId++));
-		}
-		_t->ReqService();
-	}
-}*/
 ListTell *Marshal::GetSmallestQueue(){
 
 	//finds the first available teller
@@ -160,7 +143,7 @@ void Marshal::RunSim() {
 					Teller *_t = _opns->at(rand() % _listTell->size());
 					_listTell->at(e.getId())->qCust(_t->PullFront());
 				}
-
+				delete _opns;
 			}
 			break;
 		}

@@ -4,7 +4,7 @@
  *  Created on: Oct 1, 2017
  *      Author: klibby
  */
-#include "CustQueue.h"
+#include "List"
 
 #ifndef TELLER_H_
 #define TELLER_H_
@@ -17,7 +17,7 @@ public:
 	void qCust(Customer *_c);
 	int CustQSize();
 	bool IsAvailable();
-	Customer PullCust(int index);
+	Customer *PullFront();
 	//gets the time the rest will be done
 	float GetRestTime();
 	int GetId();
@@ -28,7 +28,7 @@ public:
 private:
 	//gets the time the service will be done
 	float GetCompServeTime();
-	CustQueue *_cQueue;
+	List<Customer> *_cQueue;
 	//total rest time
 	static const int tRest=5;
 	bool available;

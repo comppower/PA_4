@@ -50,16 +50,17 @@ public:
 	static float getSimTime();
 private:
 	Marshal();
-	static void EnQCustFromIndex(int index);
+	//static void EnQCustFromIndex(int index);
 	static void ProcTellerReq();
-	static TempListTell *GetSmallestQueue();
+	static ListTell *GetSmallestQueue();
+	static ListTell *GetFilledQueues();
 	static EventQueue *_eventQ;
 	static bool singleQ;
 	static float clock;
 	//this is the single customer queue
-	static CustQueue *_customerQ;
+	static ListCust *_customerQ;
 	//this is the list of tellers
-	static ListTell listTell;
+	static ListTell *_listTell;
 	//this is the list of serviced customers
 	static ListCust *_servedCust;
 	static int cNum, tellerNum;

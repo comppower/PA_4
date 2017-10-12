@@ -16,7 +16,7 @@
  */
 Teller::Teller(int id){
 	this->id=id;
-	_cQueue=new CustQueue();
+	_cQueue=new List<Customer>();
 	available = true;
 	totalDownTime=0;
 }
@@ -25,7 +25,7 @@ Teller::Teller(int id){
  */
 Teller::Teller(){
 	this->id=-1;
-	_cQueue=new CustQueue();
+	_cQueue=new List<Customer>();
 	available=false;
 	totalDownTime=0;
 }
@@ -36,16 +36,17 @@ Teller::~Teller(){
 void Teller::ReqService(){
 	//see if exactly one person in the queue. If there's more than one, the subsequent
 	//calls will be handled by the compService action
-	if(_cQueue->Length()==1){
-		Event *_e = new Event(Teller::GetCompServeTime(), EventType::compServe, id);
+	if(_cQueue->size()==1){
+		int outTime= Teller::GetCompServeTime()
+		Event *_e = new Event(outTime, EventType::compServe, id);
+		available=false;
+		_cQueue->pop_front()->setOutTime(outTime);
 		Marshal::EnqEvent(_e);
 	}
 	//otherwise ask the marshal for a customer
 	else{
-		//this puts the customer into the queue
-		//Marshal::ReqCustomer(id);
 		//if there's still no customer then go on "break"
-		if(_cQueue->Length()==0){
+		if(_cQueue->size()==0){
 			available=false;
 			float restTime =Teller::GetRestTime();
 			totalDownTime+=restTime;
@@ -63,12 +64,9 @@ void Teller::ReqService(){
 //could be a problem with pointers
 void Teller::CompService(){
 	//creates customer with placeholder values
-	Customer *_c = new Customer(-1,-1);
-	_c=_cQueue->popTop();
-	_c->setOutTime(Marshal::now());
-	Marshal::StoreCust(_c);
 	//ask the Marshal for a customer
-	if(_cQueue->Length()<1){
+	if(_cQueue->size()<1){
+		available=true;
 		Event *_e = new Event(Marshal::now(), EventType::reqCust, id);
 		Marshal::EnqEvent(_e);
 	}
@@ -95,7 +93,7 @@ void Teller::CompRest(){
 
 }
 int Teller::CustQSize(){
-	return _cQueue->Length();
+	return _cQueue->size();
 }
 /**
  * @returns the time the rest is over
@@ -109,7 +107,7 @@ float Teller::GetCompServeTime(){
 }
 
 void Teller::qCust(Customer *_c){
-	_cQueue->addCust(_c);
+	_cQueue->push_back(_c);
 }
 
 int Teller::GetId(){
@@ -119,6 +117,6 @@ int Teller::GetId(){
 bool Teller::IsAvailable(){
 	return available;
 }
-Customer Teller::PullCust(int index){
-	return _cQueue->PullAt(index);
+Customer *Teller::PullFront(){
+	return _cQueue->pop_front();
 }

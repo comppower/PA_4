@@ -44,7 +44,7 @@ int CustQueue::Length(){
 
 Customer CustQueue::PullAt(int index){
 	Customer c = _listC->at(index);
-	_listC->erase(index);
+	//_listC->erase(index);
 	return c;
 }
 

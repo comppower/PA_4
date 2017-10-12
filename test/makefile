@@ -1,9 +1,9 @@
-CFLAGS =-g
+CFLAGS=-g
 
 all: Main docs
 
 Main: Main.o Teller.o Event.o 
-	g++ $(CFLAGS) -Wall Marshal.o Teller.o CustQueue.o Customer.o Event.o Main.o -o Main
+	g++ $(CFLAGS) -Wall Marshal.o Teller.o Customer.o Event.o Main.o -o Main
 
 Main.o: Main.cpp Marshal.o
 	g++ $(CFLAGS) -Wall -c Main.cpp
@@ -14,8 +14,8 @@ Marhsal.o: Teller.o Marshal.cpp Marshal.h
 Teller.o: Teller.cpp Teller.h CustQueue.o 
 	g++ $(CFLAGS) -Wall -c Teller.cpp
 
-CustQueue.o: CustQueue.cpp CustQueue.h Customer.o
-	g++ $(CFLAGS) -Wall -c CustQueue.cpp
+#CustQueue.o: CustQueue.cpp CustQueue.h Customer.o
+	#g++ $(CFLAGS) -Wall -c CustQueue.cpp
 	
 Customer.o: Customer.cpp Customer.h
 	g++ $(CFLAGS) -Wall -c Customer.cpp

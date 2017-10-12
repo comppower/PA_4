@@ -18,8 +18,8 @@
 EventQueue *Marshal::_eventQ =new EventQueue();
 bool Marshal::singleQ=true;
 float Marshal::clock =0;
-ListTell Marshal::listTell;
-CustQueue *Marshal::_customerQ = new CustQueue();
+ListTell *Marshal::_listTell=new ListTell();
+ListCust *Marshal::_customerQ = new ListCust();
 ListCust *Marshal::_servedCust= new ListCust();
 int Marshal::cNum=0;
 int Marshal::tellerNum=0;
@@ -44,7 +44,6 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	Marshal::tellerNum=tellerNum;
 	serveTime=avgServeTime;
 	Marshal::simTime=simTime;
-	Marshal::listTell= List<Teller>();
 	Marshal::InitTellers();
 	for(int i=0; i<cNum; i++){
 		float time= simTime*(rand()/float(RAND_MAX));
@@ -57,80 +56,72 @@ void Marshal::init(int cNum, int tellerNum, int simTime, int avgServeTime){
 	}
 }
 void Marshal::ProcTellerReq(){
-	for (int i = 0; i < listTell.size(); i++) {
+	for (int i = 0; i < _listTell->size(); i++) {
 		Event *_e=new Event(0,EventType::reqCust,(int) i);
 		Marshal::EnqEvent(_e);
 	}
 }
 void Marshal::InitTellers(){
 	for(int i=0; i<tellerNum; i++){
-		/*Teller *t = new Teller();
-		*t=Teller(tId++);*/
-		listTell.push_back(new Teller(tId++));
+		_listTell->push_back(new Teller(tId++));
 	}
-	for(int i=0; i<listTell.size(); i++){
-		std::cout<<listTell.at(i).GetId()<<std::endl;
+	for(int i=0; i<_listTell->size(); i++){
+		std::cout<<_listTell->at(i)->GetId()<<std::endl;
 	}
 	printEQ();
 }
 
-void Marshal::EnQCustFromIndex(int index) {
+/*void Marshal::EnQCustFromIndex(int index) {
 	bool found = false;
-	Teller *t = new Teller();
-	for (int i = 0; !found && i < listTell.size(); i++) {
-		*t=listTell.at(i);
-		if (t->GetId() == index) {
-			found = true;
-			listTell.erase(i);
-			if(singleQ){
-				if (_customerQ->Length() > 0) {
-					t->qCust(_customerQ->popTop());
-				}
+	Teller *_t = _listTell->at(0);
+	for (int i = 0; !found && i < _listTell->size(); i++) {
+		if (_listTell->at(i)->GetId() == index)
+			_t = _listTell->at(i);
+		found = true;
+		if (singleQ) {
+			if (_customerQ->size() > 0) {
+				_t->qCust(_customerQ->pop_front());
 			}
-			else if(!singleQ){
-				t->qCust(new Customer(Marshal::now(), cId++));
-			}
-			t->ReqService();
-			listTell.push_back(t);
+		} else if (!singleQ) {
+			_t->qCust(new Customer(Marshal::now(), cId++));
 		}
+		_t->ReqService();
 	}
-	delete t;
-}
-TempListTell *Marshal::GetSmallestQueue(){
-	TempListTell *_custLineOpns = new TempListTell();
-	try{
-		//finds the first available teller
-		int startIndex=0;
-		Teller *t=new Teller();
-		*t = listTell.at(startIndex);
-		while(!t->IsAvailable()){
-			startIndex++;
-			*t=listTell.at(startIndex);
-		}
-		int minQueue=t->CustQSize();
-		int count;
-		for (int i = startIndex; i < listTell.size(); i++) {
-			t=new Teller();
-			*t = listTell.at(i);
-			if (t->CustQSize() < minQueue&& t->IsAvailable()) {
-				minQueue = t->CustQSize();
-				_custLineOpns->clear();
-				count = 0;
-				_custLineOpns->push_back(t);
-			} else if (t->CustQSize() == minQueue&& t->IsAvailable()) {
-				_custLineOpns->push_back(t);
-				count++;
-			}
-			else{
-				delete t;
-			}
-		}
+}*/
+ListTell *Marshal::GetSmallestQueue(){
 
+	//finds the first available teller
+	int startIndex = 0;
+	ListTell *_opns = new ListTell();
+	int minSize = _listTell->at(0)->CustQSize();
+	for (int i = 0; i < _listTell->size(); i++) {
+		if(_listTell->at(i)->IsAvailable())
+		{
+			if (_listTell->at(i)->CustQSize() < minSize) {
+				_opns->clear();
+				_opns->push_back(_listTell->at(i));
+			} else if (_listTell->at(i)->CustQSize() == minSize) {
+				_opns->push_back(_listTell->at(i));
+			}
+		}
 	}
-	catch(const std::out_of_range& e){
-		std::cout<<"The teller size is less than 0"<<std::endl;
+	return _opns;
+}
+
+ListTell *Marshal::GetFilledQueues(){
+
+	//finds the first available teller
+	int startIndex = 0;
+	ListTell *_opns = new ListTell();
+	for (int i = 0; i < _listTell->size(); i++) {
+		if(_listTell->at(i)->IsAvailable())
+		{
+			if (_listTell->at(i)->CustQSize()>0) {
+				_opns->push_back(_listTell->at(i));
+			}
+		}
 	}
-	return _custLineOpns;
+	return _opns;
 }
 void Marshal::RunSim() {
 
@@ -142,144 +133,47 @@ void Marshal::RunSim() {
 		switch (type) {
 		case enqCust:
 			if (singleQ) {
-				_customerQ->addCust(new Customer(Marshal::now(), cId++));
-			} else if (!singleQ) {
-				try {
-					//the method that returns the list
-					TempListTell *_listOpns=GetSmallestQueue();
-					//pick a random member from the list
-					int targetIndex = (int) lround(_listOpns->size() * (rand() / float(RAND_MAX)));
-					for (int i = 0; i < targetIndex; i++) {
-						_listOpns->pop_front();
-					}
-					//find the member and enqueue the customer and return it
-					//to the list
-					EnQCustFromIndex(_listOpns->front()->GetId());
-
-				} catch (const std::out_of_range& e) {
-					std::cerr << "Out of range error " << e.what() << std::endl;
-					std::cout << "Check teller list size enq" << std::endl;
-				}
+				_customerQ->push_back(new Customer(Marshal::now(), cId++));
+			} else {
+				//the method that returns the list
+				ListTell *_listOpns = GetSmallestQueue();
+				//pick a random member from the list
+				int targetIndex = rand() % _listOpns->size();
+				_listOpns->at(targetIndex)->qCust(
+						new Customer(Marshal::now(), cId++));
+				//find the member and enqueue the customer and return it
+				//to the list
+				delete _listOpns;
 			}
 			break;
 
 		case reqCust: {
 			if (singleQ) {
-				EnQCustFromIndex(e.getId());
+				Customer *_c = new Customer(Marshal::now(), cId++);
+				_listTell->at(e.getId())->qCust(_c);
 			}
 			//make sure to grab the 2nd person off of whatever queue and
 			//make sure it gets removed from the queue
 			else if (!singleQ) {
-				try {
-					//this is the list of tellers with more than
-					//2 people in their queue
-					TempListTell *_listOpns = new TempListTell();
-					//elements in the list
-					int count = -1;
-					//starting at 0 to ensure teller 0 is checked
-					for (int i = 0; i < listTell.size(); i++) {
-						Teller *t = new Teller();
-						*t = listTell.at(i);
-						if (t->CustQSize() > 1&& t->IsAvailable()) {
-							_listOpns->push_back(t);
-							count++;
-						}
-						else{
-							delete t;
-						}
+				ListTell *_opns = Marshal::GetFilledQueues();
+				if (_opns->size() < 1) {
+					Teller *_t = _opns->at(rand() % _listTell->size());
+					_listTell->at(e.getId())->qCust(_t->PullFront());
+				}
 
-					}
-					//if the count is -1 don't add a customer and
-					//just call reqService
+			}
+			break;
+		}
 
-					int pullID=-1;
-					if (count > -1) {
-						//pick a random member from the list
-						int targetIndex = (int) roundl(count * (rand() / float(RAND_MAX)));
-						for (int i = 0; i < targetIndex; i++) {
-							_listOpns->pop_front();
-						}
-						//and get its ID
-						pullID = _listOpns->front().GetId();
-					}
-					//find and pull the customer from the right teller
-					bool pulledCust=false;
-					Customer toMove = Customer(-1, -1);
-					for (int i = 0; !pulledCust&&pullID>=0; i++) {
-						Teller *t = new Teller();
-						*t=listTell.at(i);
-						if (t->GetId() == pullID) {
-							pulledCust = true;
-							listTell.erase(i);
-							toMove=t->PullCust(1);
-							listTell.push_back(t);
-						}
-						else {
-							delete t;
-						}
-					}
-					//find the teller to put the customer into
-					bool putCust=false;
-					for (int i = 0; !putCust; i++) {
-						Teller *t = new Teller();
-						*t=listTell.at(i);
-						if (t->GetId() == e.getId()) {
-							putCust = true;
-							listTell.erase(i);
-							if(pullID>=0){
-								t->qCust(&toMove);
-							}
-							t->ReqService();
-							listTell.push_back(t);
-						}
-						else{
-							delete t;
-						}
-					}
-					delete _listOpns;
-				}
-				catch (const std::out_of_range& e) {
-					std::cerr << "Out of range error " << e.what() << std::endl;
-					std::cout << "Check teller list size req" << std::endl;
-				}
-			}
+		case compRest: {
+			_listTell->at(e.getId())->CompRest();
 			break;
 		}
-		case compRest:{
-			bool found=false;
-			for (int i = 0; !found && i < listTell.size(); i++) {
-				Teller *t = new Teller();
-				*t=listTell.at(i);
-				if (t->GetId() == e.getId()) {
-					found = true;
-					listTell.erase(i);
-					t->CompRest();
-					listTell.push_back(t);
-				}
-				else{
-					delete t;
-				}
-			}
+		case compServe: {
+			_listTell->at(e.getId())->CompService();
 			break;
 		}
-		case compServe:{
-			bool found=false;
-			for (int i = 0; !found && i < listTell.size(); i++) {
-				Teller *t = new Teller();
-				*t=listTell.at(i);
-				if (t->GetId() == e.getId()) {
-					found = true;
-					listTell.erase(i);
-					t->CompService();
-					listTell.push_back(t);
-				}
-				else{
-					delete t;
-				}
-			}
-			break;
-		}
-		}//switch
+		}			//switch
 		printEQ();
 		//advances the event queue
 		_eventQ->pop();
@@ -303,12 +197,11 @@ void Marshal::ReqCustomer(int id){
 
 float Marshal::CalcSum(){
 	float sum=0;
-	ListCust temp = *_servedCust;
-	for(int i=0; i<temp.size(); i++){
-		Customer c= _servedCust->front();
-		sum+=c.getOutTime();
-		sum-=c.getInTime();
-		_servedCust->pop_front();
+
+	for(int i=0; i<_servedCust->size(); i++){
+		Customer *c= _servedCust->at(i);
+		sum+=c->getOutTime();
+		sum-=c->getInTime();
 	}
 	return sum;
 }
